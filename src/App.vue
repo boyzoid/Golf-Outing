@@ -1,28 +1,58 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <router-link to="/" class="navbar-brand">Golf Outing</router-link>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto" v-show="authenticated">
+          <li class="nav-item" v-bind:class="{ 'active' : $route.path == '/'}">
+            <router-link class="nav-link" to="/">Home <span class="sr-only">(current)</span></router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/outings" v-bind:class="{ 'active' : $route.path == '/outings'}">Outings</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/courses" v-bind:class="{ 'active' : $route.path == '/courses'}">Courses</router-link>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <router-view @authenticated="setAuthenticated"/>
   </div>
 </template>
 
-<style lang="scss">
-  @import './assets/styles/custom.scss';
-  @import '../node_modules/bootstrap/scss/bootstrap.scss';
-
-#app {
-  text-align: center;
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
+<script>
+  export default {
+    name: 'App',
+    data() {
+      return {
+        authenticated: false,
+        mockAccount: {
+          username: "scott.stroz@gmail.com",
+          password: "password"
+        }
+      }
+    },
+    mounted() {
+      if(!this.authenticated) {
+        this.$router.replace({ name: "login" });
+      }
+    },
+    methods: {
+      setAuthenticated(status) {
+        this.authenticated = status;
+      },
+      logout() {
+        this.authenticated = false;
+      }
     }
   }
-}
+</script>
+
+<style lang="scss">
+  @import './assets/styles/custom.scss';
+
 </style>

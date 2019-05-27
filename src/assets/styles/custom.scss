@@ -1,7 +1,5 @@
 // Override / set color variables
-$blue: #3399ff;
-$orange: #f26c22;
 
 
-$primary: $blue;
-$secondary: $orange;
+@import 'node_modules/bootstrap/scss/bootstrap';
+@import 'node_modules/bootstrap-vue/src/index.scss';
