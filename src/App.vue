@@ -37,6 +37,7 @@
       }
     },
     mounted() {
+
       if(!this.authenticated) {
         this.$router.replace({ name: "login" });
       }
@@ -48,6 +49,13 @@
       logout() {
         this.authenticated = false;
       }
+    },
+    beforeCreate() {
+      this.$store.subscribe((mutation, state) => {
+        // Store the state object as a JSON string
+        localStorage.setItem('store', JSON.stringify(state));
+      });
+      this.$store.commit('initialiseStore');
     }
   }
 </script>
