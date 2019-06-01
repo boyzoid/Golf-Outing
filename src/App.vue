@@ -7,7 +7,7 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto" v-show="authenticated">
+        <ul class="navbar-nav mr-auto" v-show="$store.state.authenticated">
           <li class="nav-item" v-bind:class="{ 'active' : $route.path == '/'}">
             <router-link class="nav-link" to="/">Home <span class="sr-only">(current)</span></router-link>
           </li>
@@ -16,6 +16,9 @@
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/courses" v-bind:class="{ 'active' : $route.path == '/courses'}">Courses</router-link>
+          </li>
+          <li class="nav-item">
+            <a href="#" @click="logout()" class="nav-link">Logout</a>
           </li>
         </ul>
       </div>
@@ -37,17 +40,17 @@
       }
     },
     mounted() {
-
-      if(!this.authenticated) {
+      if(!this.$store.state.authenticated) {
         this.$router.replace({ name: "login" });
       }
     },
     methods: {
       setAuthenticated(status) {
-        this.authenticated = status;
+        this.$store.dispatch( 'login' );
       },
       logout() {
-        this.authenticated = false;
+        this.$store.dispatch( 'logout' );
+        this.$router.replace({ name: "login" })
       }
     },
     beforeCreate() {
