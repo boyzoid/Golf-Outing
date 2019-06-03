@@ -91,9 +91,10 @@ component extends="framework.one" {
 		base: "/wwwapp",
 		generateSES: true,
 		SESOmitIndex: true,
-		applicationKey: "golfouting",
+		applicationKey: "golf_outing",
 		diLocations: ['/model'],
-		defaultSection: 'api'
+		defaultSection: 'api',
+		reloadApplicationOnEveryRequest = true
 	};
 
 	ormPaths=["/model/orm"];
@@ -107,7 +108,6 @@ component extends="framework.one" {
 	}
 
 	function setUpApplication( rc ){
-		setUpBeanFactory();
 		ormReload();
 
 		application.applicationKey = variables.framework.applicationKey;

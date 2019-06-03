@@ -17,6 +17,7 @@
 </template>
 
 <script>
+  import axios from 'axios';
   export default {
     name: 'Login',
     data() {
@@ -31,16 +32,30 @@
     methods: {
       login() {
         this.loginFailed = false;
-        if(this.input.username != "" && this.input.password != "") {
-          if(this.input.username == this.$parent.mockAccount.username && this.input.password == this.$parent.mockAccount.password) {
-            this.$emit("authenticated", true);
+        let url = process.env.VUE_APP_API_ROOT + '/api/login';
+        let self = this;
+        console.log( self.$store.state.token );
+        axios({
+            method: 'POST',
+            url: url,
+            data: self.input,
+            headers: {
+              'token': self.$store.state.token
+            },
+            responseType: 'json'
+        })
+        .then( result => {
+          if( result.data.success ){
+            this.$emit("authenticated", result.data );
             this.$router.replace({ name: "home" });
-          } else {
+          }
+          else{
             this.loginFailed = true;
           }
-        } else {
+        }, error => {
+          console.log( error );
           this.loginFailed = true;
-        }
+        })
       }
     }
   }

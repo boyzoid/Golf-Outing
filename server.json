@@ -15,10 +15,5 @@
     },
     "JVM":{
         "heapSize":"1024"
-    },
-    "trayOptions":[
-        {
-            "label":"Golf Outing"
-        }
-    ]
+    }
 }

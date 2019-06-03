@@ -47,9 +47,10 @@
       }
     },
     methods: {
-      setAuthenticated(status) {
-        if( status ){
+      setAuthenticated(data) {
+        if( data.success ){
           this.$store.dispatch( 'login' );
+          this.$store.dispatch( 'setToken', data.token )
         }
 
       },

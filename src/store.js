@@ -46,6 +46,9 @@ export default new Vuex.Store({
     setEnvironment( context, data ){
       context.commit('setProduction', data.production );
       context.commit('setApiRoot', data.apiRoot );
+    },
+    setToken( context, token ){
+      context.commit( 'setToken', token );
     }
   }
 
