@@ -6,7 +6,9 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     authenticated: false,
-    token: null
+    token: null,
+    production: process.env.VUE_APP_PRODUCTION,
+    apiRoot: process.env.VUE_APP_API_ROOT
   },
   mutations:{
     initialiseStore(state) {
@@ -23,6 +25,12 @@ export default new Vuex.Store({
     },
     setToken( state, token ){
       state.token = token;
+    },
+    setProduction( state, production ){
+      state.production = production;
+    },
+    setApiRoot( state, root ){
+      state.apiRoot = root;
     }
   },
 
@@ -34,6 +42,10 @@ export default new Vuex.Store({
     logout ( context ){
       context.commit('setAuthenticated', false );
       context.commit('setToken', null );
+    },
+    setEnvironment( context, data ){
+      context.commit('setProduction', data.production );
+      context.commit('setApiRoot', data.apiRoot );
     }
   }
 

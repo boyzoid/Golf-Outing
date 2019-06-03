@@ -3,3 +3,16 @@
 
 @import 'node_modules/bootstrap/scss/bootstrap';
 @import 'node_modules/bootstrap-vue/src/index.scss';
+
+.bold {
+font-weight: bold;
+}
+
+#dev-mode {
+  position: fixed;
+  bottom: 0px;
+  width: 400px;
+  text-align: center;
+  left: 50%;
+  margin-left: -200px;
+}

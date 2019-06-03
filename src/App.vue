@@ -21,6 +21,7 @@
             <a href="#" @click="logout()" class="nav-link">Logout</a>
           </li>
         </ul>
+        <div class="alert alert-danger bold" id="dev-mode" v-if="!$store.state.production">DEVELOPMENT MODE</div>
       </div>
     </nav>
     <router-view @authenticated="setAuthenticated"/>
@@ -40,13 +41,17 @@
       }
     },
     mounted() {
+      this.$store.dispatch( 'setEnvironment', { production: process.env.VUE_APP_PRODUCTION == 'false' ? false : true, apiRoot: process.env.VUE_APP_API_ROOT})
       if(!this.$store.state.authenticated) {
         this.$router.replace({ name: "login" });
       }
     },
     methods: {
       setAuthenticated(status) {
-        this.$store.dispatch( 'login' );
+        if( status ){
+          this.$store.dispatch( 'login' );
+        }
+
       },
       logout() {
         this.$store.dispatch( 'logout' );

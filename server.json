@@ -1,0 +1,24 @@
+{
+    "name":"Golf Outing",
+    "app":{
+        "cfengine":"lucee@5.2.6+59"
+    },
+    "web":{
+        "webroot":"server/www",
+        "host":"outing.mygolfleague.net.local",
+        "http":{
+            "port":"80"
+        },
+        "rewrites":{
+            "enable":true
+        }
+    },
+    "JVM":{
+        "heapSize":"1024"
+    },
+    "trayOptions":[
+        {
+            "label":"Golf Outing"
+        }
+    ]
+}
