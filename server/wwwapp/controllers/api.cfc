@@ -1,5 +1,6 @@
 component accessors=true{
     property Any securityService;
+    property Any courseService;
 
     function init(fw) {
         variables.fw = fw;
@@ -22,5 +23,9 @@ component accessors=true{
 
     public function login( Any rc ){
         variables.fw.renderData().data( { "success" : true, 'token': createUUID() } ).type( 'json' );
+    }
+
+    public function courses( Any rc ){
+        variables.fw.renderData().data( { "success" : true, 'courses': courseService.listCourses() } ).type( 'json' );
     }
 }

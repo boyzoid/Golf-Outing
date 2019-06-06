@@ -29,6 +29,7 @@
 </template>
 
 <script>
+
   export default {
     name: 'App',
     data() {
@@ -67,9 +68,9 @@
       this.$store.commit('initialiseStore');
     }
   }
-</script>
 
+</script>
 <style lang="scss">
   @import './assets/styles/custom.scss';
-
 </style>
+
