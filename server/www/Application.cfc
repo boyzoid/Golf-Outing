@@ -105,6 +105,8 @@ component extends="framework.one" {
 			setupApplication();
 		}
 		controller( 'setup.default' );
+		cfheader( name="Access-Control-Allow-Origin", value="*");
+		cfheader( name="Access-Control-Allow-Headers", value="Content-Type, Access-Control-Allow-Headers, X-Requested-With, token, content-type");
 	}
 
 	function setUpApplication( rc ){

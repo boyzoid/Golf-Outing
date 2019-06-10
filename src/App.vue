@@ -12,10 +12,10 @@
             <router-link class="nav-link" to="/">Home <span class="sr-only">(current)</span></router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/outings" v-bind:class="{ 'active' : $route.path == '/outings'}">Outings</router-link>
+            <router-link class="nav-link" to="/outings" v-bind:class="{ 'active' : isOutingNav}">Outings</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/courses" v-bind:class="{ 'active' : $route.path == '/courses'}">Courses</router-link>
+            <router-link class="nav-link" to="/courses" v-bind:class="{ 'active' : isCourseNav}">Courses</router-link>
           </li>
           <li class="nav-item">
             <a href="#" @click="logout()" class="nav-link">Logout</a>
@@ -66,6 +66,15 @@
         localStorage.setItem('store', JSON.stringify(state));
       });
       this.$store.commit('initialiseStore');
+    },
+
+    computed:{
+      isCourseNav(){
+        return this.$route.name == 'courses' || this.$route.name == 'course';
+      },
+      isOutingNav(){
+        return this.$route.name == 'outings';
+      }
     }
   }
 

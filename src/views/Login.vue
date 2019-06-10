@@ -32,12 +32,10 @@
     methods: {
       login() {
         this.loginFailed = false;
-        let url = process.env.VUE_APP_API_ROOT + '/api/login';
         let self = this;
-        console.log( self.$store.state.token );
         axios({
             method: 'POST',
-            url: url,
+            url: '/api/login',
             data: self.input,
             headers: {
               'token': self.$store.state.token

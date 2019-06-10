@@ -3,15 +3,23 @@
     <h1 class="text-center">Courses</h1>
     <loader v-if="loading"></loader>
     <div v-if="!loading">
-      <div class="overflow-auto">
+      <div class="overflow-auto" v-if="courses.length > 0">
+        <b-link class="btn btn-outline-primary btn-sm mb-2" :to="{ name: 'course', params: { id: 0}}">
+          Add Course
+        </b-link>
         <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="course-table" v-if="rows > perPage"></b-pagination>
         <b-table id="course-table" :items="courses" :fields="fields" :per-page="perPage" :current-page="currentPage" :striped="true" :hover="true">
           <template slot="actions" slot-scope="row">
-            <b-button size="sm" variant="outline-primary">
+            <b-link class="btn btn-outline-primary btn-sm" :to="{ name: 'course', params: { id: row.item.id }}">
               Edit
-            </b-button>
+            </b-link>
           </template>
         </b-table>
+      </div>
+      <div v-if="courses.length == 0">
+        <div class="alert alert-info">
+          <p>There are currently no courses in the system. <b-link :to="{ name: 'course', params: { id: 0 }}">Click here</b-link> to add a course.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -19,8 +27,6 @@
 
 <script>
   import axios from 'axios'
-
-
   export default {
     data(){
       return {
