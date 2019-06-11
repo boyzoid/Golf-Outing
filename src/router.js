@@ -30,6 +30,11 @@ export default new Router({
       component: () => import(/* webpackChunkName: "courses" */ './views/Outing.vue')
     },
     {
+      path: '/scoring/:id',
+      name: 'scoring',
+      component: () => import(/* webpackChunkName: "courses" */ './views/Scoring.vue')
+    },
+    {
       path: '/courses',
       name: 'courses',
       component: () => import(/* webpackChunkName: "courses" */ './views/Courses.vue')

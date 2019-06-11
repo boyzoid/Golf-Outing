@@ -5,13 +5,16 @@
     <div v-if="!loading">
       <div class="overflow-auto" v-if="outings.length > 0">
         <b-link class="btn btn-outline-primary btn-sm mb-2" :to="{ name: 'outing', params: { id: 0}}">
-          Add Outing
+          <plus-icon></plus-icon> Add Outing
         </b-link>
         <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="outing-table" v-if="rows > perPage"></b-pagination>
         <b-table id="course-table" :items="outings" :fields="fields" :per-page="perPage" :current-page="currentPage" :striped="true" :hover="true">
           <template slot="actions" slot-scope="row">
-            <b-link class="btn btn-outline-primary btn-sm" :to="{ name: 'outing', params: { id: row.item.id }}">
-              Edit
+            <b-link class="btn btn-outline-primary btn-sm" :to="{ name: 'outing', params: { id: row.item.id }}" title="Edit Outing">
+              <pencil-icon></pencil-icon>
+            </b-link>
+            <b-link class="btn btn-outline-success btn-sm ml-2" :to="{ name: 'scoring', params: { id: row.item.id }}" title="Score Outing">
+              <golf-icon></golf-icon>
             </b-link>
           </template>
           <template slot="organizer" slot-scope="row">
@@ -36,7 +39,11 @@
 </template>
 <script>
   import axios from 'axios'
+  import PlusIcon from "vue-material-design-icons/Plus";
+  import PencilIcon from "vue-material-design-icons/Pencil";
+  import GolfIcon from "vue-material-design-icons/Golf";
   export default {
+    components: {GolfIcon, PencilIcon, PlusIcon},
     data(){
       return {
         outings: [],

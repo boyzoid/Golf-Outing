@@ -53,6 +53,16 @@ component accessors=true{
         variables.fw.renderData().data( { "success": true, "outing": outing } ).type( 'json' );
     }
 
+    public function outingDetails( Any rc ){
+        param name="rc.id" default=0;
+        var outing = outingService.getOuting( rc.id );
+        var course = courseService.getCourse( outing.courseid );
+        var holes = courseService.getCourseHoles( course.id );
+        var golfers = golferService.listGolfersForOuting( rc.id );
+        var outingGolfers = outingService.listOutingGolfers( rc.id );
+        variables.fw.renderData().data( { 'success': true, 'outing': outing, 'course': course, 'holes': holes, 'golfers': golfers, 'outingGolfers': outingGolfers } ).type( 'json' );
+    }
+
     public function golfers( Any rc ){
         variables.fw.renderData().data( { "success" : true, 'golfers': golferService.listGolfers() } ).type( 'json' );
     }

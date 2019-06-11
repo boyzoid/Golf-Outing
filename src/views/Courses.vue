@@ -5,13 +5,13 @@
     <div v-if="!loading">
       <div class="overflow-auto" v-if="courses.length > 0">
         <b-link class="btn btn-outline-primary btn-sm mb-2" :to="{ name: 'course', params: { id: 0}}">
-          Add Course
+          <plus-icon></plus-icon> Add Course
         </b-link>
         <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="course-table" v-if="rows > perPage"></b-pagination>
         <b-table id="course-table" :items="courses" :fields="fields" :per-page="perPage" :current-page="currentPage" :striped="true" :hover="true">
           <template slot="actions" slot-scope="row">
-            <b-link class="btn btn-outline-primary btn-sm" :to="{ name: 'course', params: { id: row.item.id }}">
-              Edit
+            <b-link class="btn btn-outline-primary btn-sm" :to="{ name: 'course', params: { id: row.item.id }}" :title="'Edit ' + row.item.name">
+              <pencil-icon></pencil-icon>
             </b-link>
           </template>
         </b-table>
@@ -27,7 +27,10 @@
 
 <script>
   import axios from 'axios'
+  import PlusIcon from "vue-material-design-icons/Plus";
+  import PencilIcon from "vue-material-design-icons/Pencil";
   export default {
+    components: {PencilIcon, PlusIcon},
     data(){
       return {
         courses: [],

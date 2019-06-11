@@ -4,7 +4,7 @@
         <loader v-if="loading"></loader>
         <div v-if="!loading">
             <b-link class="btn btn-outline-success mb-4 btn-sm" :to="{ name: 'outings'}">
-                Return to Outing List
+               <arrow-left-icon></arrow-left-icon> Return to Outing List
             </b-link>
             <b-alert :show="success" dismissible variant="success" fade>
                 Outing was saved!
@@ -31,13 +31,13 @@
                     <b-row>
                         <b-col>
                             <b-form-group label="Date" label-for="date">
-                                <datetime v-model="outing.date" input-id="date" format="cccc LLLL dd, yyyy" input-class="form-control"  value-zone="local" name="date" v-validate="{required: true}" :week-start="7"></datetime>
+                                <datetime v-model="outing.date" input-id="date" format="cccc LLLL dd, yyyy" input-class="form-control"  value-zone="local" name="date" v-validate="{required: true}" :week-start="7" title="Outing Date"></datetime>
                                 <span class="text-danger">{{veeErrors.first('date')}}</span>
                             </b-form-group>
                         </b-col>
                         <b-col>
                             <b-form-group label="Tee time" label-for="teeTime" description="If multiple tee times are used, put the earliest one here.">
-                                <datetime type="time" use12-hour v-model="outing.teeTime" input-id="teeTime" format="t" input-class="form-control"  value-zone="local" data-vv-as="tee time" name="teeTime" v-validate="{required: true}"></datetime>
+                                <datetime type="time" use12-hour v-model="outing.teeTime" input-id="teeTime" format="t" input-class="form-control"  value-zone="local" data-vv-as="tee time" name="teeTime" v-validate="{required: true}" title="Tee Time"></datetime>
                                 <span class="text-danger">{{veeErrors.first('teeTime')}}</span>
                             </b-form-group>
                         </b-col>
@@ -61,8 +61,8 @@
                     </b-row>
                     <b-row class="mt-2">
                         <b-col>
-                            <b-button type="submit" variant="primary">Save Outing</b-button>
-                            <b-link class="btn btn-outline-secondary ml-2" :to="{ name: 'outing'}">
+                            <b-button type="submit" variant="primary"><content-save-icon></content-save-icon> Save Outing</b-button>
+                            <b-link class="btn btn-outline-secondary ml-2" :to="{ name: 'outings'}">
                                 Cancel
                             </b-link>
                         </b-col>
@@ -76,7 +76,10 @@
 </template>
 <script>
     import axios from 'axios'
+    import ArrowLeftIcon from "vue-material-design-icons/ArrowLeft";
+    import ContentSaveIcon from "vue-material-design-icons/ContentSave";
     export default {
+        components: {ContentSaveIcon, ArrowLeftIcon},
         data() {
             return {
                 outing: {id: 0},

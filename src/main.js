@@ -10,7 +10,7 @@ import axios from 'axios';
 import Loader from './components/Loader.vue';
 import VueLodash from 'vue-lodash'
 import VeeValidate from 'vee-validate';
-import Datetime from 'vue-datetime'
+import Datetime from 'vue-datetime';
 
 axios.defaults.baseURL = process.env.VUE_APP_API_ROOT;
 
@@ -33,6 +33,7 @@ import 'vue-datetime/dist/vue-datetime.css'
 Vue.use(Datetime)
 
 Vue.component('loader', Loader );
+
 
 new Vue({
   router,

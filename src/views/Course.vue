@@ -4,7 +4,7 @@
         <loader v-if="loading"></loader>
         <div v-if="!loading">
             <b-link class="btn btn-outline-success mb-4 btn-sm" :to="{ name: 'courses'}">
-                Return to Course List
+              <arrow-left-icon></arrow-left-icon>  Return to Course List
             </b-link>
             <b-alert :show="success" dismissible variant="success" fade>
                 Course was saved!
@@ -130,7 +130,7 @@
 
                     <b-row class="mt-2">
                         <b-col>
-                            <b-button type="submit" variant="primary">Save Course</b-button>
+                            <b-button type="submit" variant="primary"><content-save-icon></content-save-icon> Save Course</b-button>
                             <b-link class="btn btn-outline-secondary ml-2" :to="{ name: 'courses'}">
                                 Cancel
                             </b-link>
@@ -145,7 +145,11 @@
 
 <script>
     import axios from 'axios'
+    import ArrowLeftIcon from "vue-material-design-icons/ArrowLeft";
+    import DiscIcon from "vue-material-design-icons/Disc";
+    import ContentSaveIcon from "vue-material-design-icons/ContentSave";
     export default {
+        components: {ContentSaveIcon, ArrowLeftIcon},
         data(){
             return {
                 course: { id: 0 },

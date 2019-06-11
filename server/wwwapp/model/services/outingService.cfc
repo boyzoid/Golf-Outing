@@ -1,14 +1,15 @@
 component accessors=true{
 
     public function listOutings(){
-        var outings = queryExecute('select o.id, o.date, o.tee_time, o.golfer_count, c.name, c.city,c.state, u.first_name, u.last_name, u.email_address
+        var outings = queryExecute('select o.scored, o.id, o.date, o.tee_time, o.golfer_count, c.name, c.city,c.state, u.first_name, u.last_name, u.email_address
         from outing o
         join course c on o.course_id = c.id
         join golfer u on o.managed_by = u.id
-        order by o.date, o.tee_time');
+        where datediff( now(), o.date ) < 7
+        order by o.scored desc, o.date, o.tee_time');
         var ret = [];
         for( var outing in outings ){
-            ret.append({ 'id': outing.id, 'date': outing.date, 'teeTime': outing.tee_time, 'count': outing.golfer_count, 'course': {'name': outing.name, 'location': outing.city & ', ' & outing.state}, 'manager': { 'name': outing.first_name & ' ' & outing.last_name, 'email': outing.email_address}});
+            ret.append({ 'id': outing.id, 'scored' : outing.scored == 0 ? false : true, 'date': outing.date, 'teeTime': outing.tee_time, 'count': outing.golfer_count, 'course': {'name': outing.name, 'location': outing.city & ', ' & outing.state}, 'manager': { 'name': outing.first_name & ' ' & outing.last_name, 'email': outing.email_address}});
         }
         return ret;
     }
@@ -26,6 +27,39 @@ component accessors=true{
         else{
             return updateOuting( outing );
         }
+    }
+
+    public function listOutingGolfers( numeric id ){
+        var ret = [];
+        var golfers = queryExecute("select og.id, og.golfer_id, concat(g.first_name, ' ' , last_name) golfer, g.nickname, og.handicap_index, h.number, h.par, h.handicap,  gs.score
+                                    from outing_golfer og
+                                    join outing o on og.outing_id = o.id
+                                    join golfer g on og.golfer_id = g.id
+                                    left join golfer_score gs on og.id = gs.outing_golfer_id
+                                    left join hole h on gs.hole_id = h.id
+                                    where o.id = :id
+                                    order by g.last_name, g.first_name, h.number", { id: id });
+        cfloop( query=golfers, group='golfer' ){
+            var g = { 'name': golfers.golfer, 'index': golfers.handicap_index, 'scores' : {}, 'id': golfers.id, 'golferId': golfers.golfer_id, 'score' : {'front' : 0, 'back' :0} };
+            cfloop(){
+                if( isNumeric( golfers.number ) ){
+                    g.scores[golfers.number]= {
+                        'score' : golfers.score,
+                        'relationToPar': golfers.score - golfers.par,
+                    };
+                    if( golfers.number < 10 ){
+                        g.score.front = g.score.front + golfers.score;
+                    }
+                    else{
+                        g.score.back = g.score.back + golfers.score;
+                    }
+
+                }
+
+            }
+            ret.append( g );
+        }
+        return ret;
     }
 
     private function addOuting( outing ){

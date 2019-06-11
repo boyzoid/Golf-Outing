@@ -73,7 +73,7 @@
         return this.$route.name == 'courses' || this.$route.name == 'course';
       },
       isOutingNav(){
-        return this.$route.name == 'outings' || this.$route.name == 'outing';
+        return this.$route.name == 'outings' || this.$route.name == 'outing' || this.$route.name == 'scoring';
       }
     }
   }
