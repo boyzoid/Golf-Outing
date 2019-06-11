@@ -10,6 +10,7 @@ import axios from 'axios';
 import Loader from './components/Loader.vue';
 import VueLodash from 'vue-lodash'
 import VeeValidate from 'vee-validate';
+import Datetime from 'vue-datetime'
 
 axios.defaults.baseURL = process.env.VUE_APP_API_ROOT;
 
@@ -24,6 +25,12 @@ Vue.use(VeeValidate, {
   errorBagName: 'veeErrors',
   events: ''
 })
+Vue.use(require('vue-moment'));
+
+// You need a specific loader for CSS files
+import 'vue-datetime/dist/vue-datetime.css'
+
+Vue.use(Datetime)
 
 Vue.component('loader', Loader );
 

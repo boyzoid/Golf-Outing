@@ -8,7 +8,7 @@ export default new Vuex.Store({
     authenticated: false,
     token: null,
     production: process.env.VUE_APP_PRODUCTION,
-    apiRoot: process.env.VUE_APP_API_ROOT
+    apiRoot: process.env.VUE_APP_API_ROOT,
   },
   mutations:{
     initialiseStore(state) {

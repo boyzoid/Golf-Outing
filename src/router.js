@@ -25,6 +25,11 @@ export default new Router({
       component: () => import(/* webpackChunkName: "outings" */ './views/Outings.vue')
     },
     {
+      path: '/outing/:id',
+      name: 'outing',
+      component: () => import(/* webpackChunkName: "courses" */ './views/Outing.vue')
+    },
+    {
       path: '/courses',
       name: 'courses',
       component: () => import(/* webpackChunkName: "courses" */ './views/Courses.vue')

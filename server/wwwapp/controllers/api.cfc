@@ -1,6 +1,8 @@
 component accessors=true{
     property Any securityService;
     property Any courseService;
+    property Any outingService;
+    property Any golferService;
 
     function init(fw) {
         variables.fw = fw;
@@ -35,5 +37,23 @@ component accessors=true{
     public function putCourse( Any rc ){
         var data = courseService.putCourse( rc.course, rc.holes );
         variables.fw.renderData().data( { "success": true, "course": data.course, 'holes': data.holes } ).type( 'json' );
+    }
+
+    public function outings( Any rc ){
+        variables.fw.renderData().data( { "success" : true, 'outings': outingService.listOutings() } ).type( 'json' );
+    }
+
+    public function outing( Any rc ){
+        param name="rc.id" default=0;
+        variables.fw.renderData().data( { "success" : true, 'outing': outingService.getOuting( rc.id ) } ).type( 'json' );
+    }
+
+    public function putOuting( Any rc ){
+        var outing = outingService.putOuting( rc.outing );
+        variables.fw.renderData().data( { "success": true, "outing": outing } ).type( 'json' );
+    }
+
+    public function golfers( Any rc ){
+        variables.fw.renderData().data( { "success" : true, 'golfers': golferService.listGolfers() } ).type( 'json' );
     }
 }
