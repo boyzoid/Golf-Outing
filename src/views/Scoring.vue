@@ -1,5 +1,5 @@
 <template>
-    <div class="col-8 offset-2">
+    <div class="col-10 offset-1">
         <h1 class="text-center">Outing Scoring</h1>
         <loader v-if="loading"></loader>
         <div v-if="!loading">
@@ -10,7 +10,7 @@
             <h2 class="text-center">{{ course.name }}</h2>
             <h3 class="text-center">{{ course.city}}, {{course.state}}</h3>
 
-            <table class="table table-striped scores">
+            <table class="table table-hover scores">
                 <thead>
                     <tr>
                         <th></th>
@@ -39,23 +39,23 @@
 
                 </thead>
                 <tbody>
-                    <tr v-for="g in outingGolfers">
+                    <tr v-for="g in outingGolfers" class="golfers">
                         <th><b-link @click="scoreGolfer( g )" :title="'Edit Score for ' + g.name "><pencil-icon :size="14"></pencil-icon></b-link> {{g.name}} <span class="small">({{courseHandicap(g.index)}})</span></th>
-                        <td v-for="p in $parent.lodash.range(1, 10)" class="text-center">
+                        <td v-for="p in $parent.lodash.range(1, 10)" class="text-center score" :class="getScoreClass(g.scores, p)">
                             {{ getGolferScore( g.scores, p) }}
                             <span class="pop" v-if="golferGetsPop(g.index, holes[p-1].handicap)">
                                 <circle-icon :size="7" v-for="f in popsPerHole(g.index, holes[p-1].handicap)" :key="f"></circle-icon>
                             </span>
                         </td>
-                        <td class="text-center table-info" >{{g.score.front }}</td>
+                        <td class="text-center table-secondary score" >{{g.score.front }}</td>
                         <td v-for="p in $parent.lodash.range(10, 19)" class="text-center">
                             {{ getGolferScore( g.scores, p) }}
                             <span class="pop" v-if="golferGetsPop(g.index, holes[p-1].handicap)">
                                 <circle-icon :size="7" v-for="b in popsPerHole(g.index, holes[p-1].handicap)" :key="b"></circle-icon>
                             </span>
                         </td>
-                        <td class="text-center table-info">{{g.score.back}}</td>
-                        <td class="text-center table-warning">{{ g.score.front + g.score.back }}</td>
+                        <td class="text-center table-secondary score">{{g.score.back}}</td>
+                        <td class="text-center table-info score">{{ g.score.front + g.score.back }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -211,6 +211,20 @@
                 let hcap = this.courseHandicap( idx );
                 let hcap_prime = this.handicapPrime;
                 return (hcap - hcap_prime) >= holeHandicap;
+            },
+            getScoreClass( scores, idx ){
+                let ret = '';
+                if( scores[idx] != undefined && scores[idx].relationToPar != undefined ){
+                    switch( scores[idx].relationToPar ){
+                        case -1:
+                            ret = 'birdie';
+                        break;
+                        case -2:
+                            ret = 'eagle';
+                        break;
+                    }
+                }
+                return ret
             },
             popsPerHole( idx, holeHandicap ){
                 let hcap = this.courseHandicap( idx );

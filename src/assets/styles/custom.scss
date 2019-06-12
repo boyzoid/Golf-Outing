@@ -68,3 +68,12 @@ td.action-3{
 td.action-4{
   width: 120px;
 }
+
+
+td.birdie{
+  background: theme-color-level("success", -5)
+}
+
+td.eagle{
+  background: theme-color-level("warning", -5)
+}

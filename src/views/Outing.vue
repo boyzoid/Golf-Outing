@@ -1,5 +1,5 @@
 <template>
-    <div class="col-8 offset-2">
+    <div class="col-10 offset-1">
         <h1 class="text-center">{{ outing.id == 0 ? 'Add' : 'Edit'}} Outing </h1>
         <loader v-if="loading"></loader>
         <div v-if="!loading">
