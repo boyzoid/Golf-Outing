@@ -40,12 +40,12 @@ component accessors=true{
     }
 
     public function outings( Any rc ){
-        variables.fw.renderData().data( { "success" : true, 'outings': outingService.listOutings() } ).type( 'json' );
+        variables.fw.renderData().data( { "success" : true, 'outings': outingService.listOutings()  } ).type( 'json' );
     }
 
     public function outing( Any rc ){
         param name="rc.id" default=0;
-        variables.fw.renderData().data( { "success" : true, 'outing': outingService.getOuting( rc.id ) } ).type( 'json' );
+        variables.fw.renderData().data( { "success" : true, 'outing': outingService.getOuting( rc.id ), 'outingGolfers': outingService.listOutingGolfers( rc.id )} ).type( 'json' );
     }
 
     public function putOuting( Any rc ){
@@ -58,9 +58,8 @@ component accessors=true{
         var outing = outingService.getOuting( rc.id );
         var course = courseService.getCourse( outing.courseid );
         var holes = courseService.getCourseHoles( course.id );
-        var golfers = golferService.listGolfersForOuting( rc.id );
         var outingGolfers = outingService.listOutingGolfers( rc.id );
-        variables.fw.renderData().data( { 'success': true, 'outing': outing, 'course': course, 'holes': holes, 'golfers': golfers, 'outingGolfers': outingGolfers } ).type( 'json' );
+        variables.fw.renderData().data( { 'success': true, 'outing': outing, 'course': course, 'holes': holes, 'outingGolfers': outingGolfers } ).type( 'json' );
     }
 
     public function golfers( Any rc ){

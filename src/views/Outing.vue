@@ -27,6 +27,15 @@
                                 <span class="text-danger">{{veeErrors.first('course')}}</span>
                             </b-form-group>
                         </b-col>
+                        <b-col>
+                            <b-form-group label="Organizer" label-for="organizer">
+                                <b-form-select v-model="outing.organizer" v-validate="{required: true}" name="organizer">
+                                    <option value="">Please select an organizer</option>
+                                    <option v-for="golfer in golfers" :value="golfer.id">{{golfer.fullname}}</option>
+                                </b-form-select>
+                                <span class="text-danger">{{veeErrors.first('organizer')}}</span>
+                            </b-form-group>
+                        </b-col>
                     </b-row>
                     <b-row>
                         <b-col>
@@ -43,20 +52,29 @@
                         </b-col>
                     </b-row>
                     <b-row>
-                        <b-col>
-                            <b-form-group label="# of golfers" label-for="count">
-                                <b-form-input id="count" name="count" v-model="outing.count" type="number" v-validate="{required: true}" data-vv-as="number of golfers"></b-form-input>
-                                <span class="text-danger">{{veeErrors.first('count')}}</span>
-                            </b-form-group>
+                        <b-col class="text-center mb-2">
+                            <span class="bold">Golfers Playing</span>
+                            <b-link class="ml-2" title="Add Golfer"><plus-circle-icon title="Add Golfer"></plus-circle-icon></b-link>
                         </b-col>
-                        <b-col>
-                            <b-form-group label="Organizer" label-for="organizer">
-                                <b-form-select v-model="outing.organizer" v-validate="{required: true}" name="organizer">
-                                    <option value="">Please select an organizer</option>
-                                    <option v-for="golfer in golfers" :value="golfer.id">{{golfer.fullname}}</option>
-                                </b-form-select>
-                                <span class="text-danger">{{veeErrors.first('organizer')}}</span>
-                            </b-form-group>
+                    </b-row>
+                    <b-row>
+                        <b-col class="col-md-8 offset-md-2">
+                            <table class="table table-striped table-hover table-sm">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th></th>
+                                        <th>Golfer</th>
+                                        <th>Handicap</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="golfer in outingGolfers">
+                                        <td></td>
+                                        <td>{{golfer.name}}</td>
+                                        <td>{{golfer.index}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </b-col>
                     </b-row>
                     <b-row class="mt-2">
@@ -78,8 +96,9 @@
     import axios from 'axios'
     import ArrowLeftIcon from "vue-material-design-icons/ArrowLeft";
     import ContentSaveIcon from "vue-material-design-icons/ContentSave";
+    import PlusCircleIcon from "vue-material-design-icons/PlusCircle";
     export default {
-        components: {ContentSaveIcon, ArrowLeftIcon},
+        components: {PlusCircleIcon, ContentSaveIcon, ArrowLeftIcon},
         data() {
             return {
                 outing: {id: 0},
@@ -88,7 +107,8 @@
                 success: false,
                 loadError: null,
                 courses: [],
-                golfers: []
+                golfers: [],
+                outingGolfers: []
             }
         },
         created: function(){
@@ -119,6 +139,7 @@
                         self.loading = false;
                         if( result.status == 200 && result.data.success ){
                             self.outing = result.data.outing;
+                            self.outingGolfers = result.data.outingGolfers;
                         }
                         else{
                             self.loadError = "There was a problem loading the outing."

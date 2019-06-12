@@ -9,7 +9,7 @@
             <h2 class="text-center">{{ outing.date | moment('dddd MMMM D, YYYY')}}</h2>
             <h2 class="text-center">{{ course.name }}</h2>
             <h3 class="text-center">{{ course.city}}, {{course.state}}</h3>
-            <b-button class="mb-3" @click="setUpScoreEntry()">Add Golfer Scores</b-button>
+
             <table class="table table-striped scores">
                 <thead>
                     <tr>
@@ -40,7 +40,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="g in outingGolfers">
-                        <th><b-link @click="rescoreGolfer( g )" :title="'Edit Score for ' + g.name "><pencil-icon :size="14"></pencil-icon></b-link> {{g.name}} <span class="small">({{courseHandicap(g.index)}})</span></th>
+                        <th><b-link @click="scoreGolfer( g )" :title="'Edit Score for ' + g.name "><pencil-icon :size="14"></pencil-icon></b-link> {{g.name}} <span class="small">({{courseHandicap(g.index)}})</span></th>
                         <td v-for="p in $parent.lodash.range(1, 10)" class="text-center">{{ getGolferScore( g.scores, p) }}<circle-icon :size="8" v-if="golferGetsPop(g.index, holes[p-1].handicap)"></circle-icon></td>
                         <td class="text-center">{{g.score.front}}</td>
                         <td v-for="p in $parent.lodash.range(10, 19)" class="text-center">{{ getGolferScore( g.scores, p) }}<circle-icon :size="8" v-if="golferGetsPop(g.index, holes[p-1].handicap)"></circle-icon></td>
@@ -50,7 +50,60 @@
                 </tbody>
             </table>
         </div>
+        <b-modal id="edit-scores" title="Enter Scores" size="xl" @ok="submitScores">
+            <h4>{{course.name}}</h4>
+            <h5>{{edit.name}}</h5>
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Hole</th>
+                        <th v-for="p in this.lodash.range(1, 10)" class="text-center">{{p}}</th>
+                    </tr>
+                    <tr>
+                        <th>Par</th>
+                        <th v-for="p in this.lodash.range(1, 10)" class="text-center">{{holes[p-1] != undefined ? holes[p-1].par : ''}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td v-for="p in lodash.range( 1, 10)" class="text-center">
+                            <b-form-input type="text" class="course-input mx-auto" :id="'s'+p" v-model="edit.scores[p-1].score" maxlength="1" ></b-form-input>
+                        </td>
+                    </tr>
+                </tbody>
+                <thead>
+                <tr>
+                    <th>Hole</th>
+                    <th v-for="p in this.lodash.range(10, 19)" class="text-center">{{p}}</th>
+                </tr>
+                <tr>
+                    <th>Par</th>
+                    <th v-for="p in this.lodash.range(10, 19)" class="text-center">{{holes[p-1] != undefined ? holes[p-1].par : ''}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td v-for="p in lodash.range( 10, 19)" class="text-center">
+                        <b-form-input type="text" class="course-input mx-auto" :id="'s'+p" v-model="edit.scores[p-1].score" maxlength="1" ></b-form-input>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <template slot="modal-footer" slot-scope="{ ok, close }">
+
+                <b-button variant="secondary" @click="close()">
+                    Cancel
+                </b-button>
+                <b-button  variant="success" @click="ok()">
+                    Save Round
+                </b-button>
+
+            </template>
+        </b-modal>
     </div>
+
 </template>
 <script>
     import axios from 'axios'
@@ -69,19 +122,36 @@
                 outing: {id: 0},
                 course: {},
                 holes: [],
-                golfers: [],
                 outingGolfers: [],
-                edit:{
+                edit: {
+                    name: null,
                     golferId: null,
                     outingGolferId: null,
-                    scores: []
-                },
-                showEntryModal: false
+                    scores: [
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                        {id: null, score: null},
+                    ]
+                }
             }
         },
         created: function(){
             this.fetchOuting();
-
         },
         watch:{
             '$route' : 'fetchOuting'
@@ -102,7 +172,6 @@
                             self.outing = result.data.outing;
                             self.course = result.data.course;
                             self.holes = result.data.holes;
-                            self.golfers = result.data.golfers;
                             self.outingGolfers = result.data.outingGolfers;
                         }
                         else{
@@ -128,26 +197,28 @@
                 let hcap_prime = this.handicapPrime;
                 return (hcap - hcap_prime) >= holeHandicap;
             },
-            setUpScoreEntry(){
-                this.edit.golferId = null;
-                this.edit.scores = [];
-                this.edit.outingGolferId = null;
-                for( let i=0; i<this.holes.length; i++){
-                    this.edit.scores.push( {'id': this.holes[i].id, 'score': null})
-                }
-                this.showEntryModal = true;
-                console.log( this.edit );
-
-            },
-            rescoreGolfer( golfer ){
+            scoreGolfer( golfer ){
                 this.edit.golferId = golfer.golferId;
                 this.edit.outingGolferId = golfer.id;
+                this.edit.name = golfer.name;
                 this.edit.scores = [];
-                for( let score in golfer.scores ){
-                    this.edit.scores.push( {'id': this.holes[ score-1 ].id, 'score': golfer.scores[ score ].score})
+                if( Object.keys( golfer.scores ).length > 0 ){
+                    for( let score in golfer.scores ){
+                        this.edit.scores.push( {'id': this.holes[ score-1 ].id, 'score': golfer.scores[ score ].score})
+                    }
                 }
-                this.showEntryModal = true;
+                else{
+                    for( let i=0; i<18; i++ ){
+                        this.edit.scores.push( {'id': this.holes[ i ].id, 'score': null})
+                    }
+                }
+
+                this.$bvModal.show('edit-scores');
                 console.log( this.edit );
+            },
+            submitScores( e ){
+                e.preventDefault();
+                console.log( 'submitted' );
             }
         },
         computed:{
