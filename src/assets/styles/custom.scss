@@ -49,7 +49,22 @@ font-weight: bold;
   position: relative;
 }
 
-.scores td span.circle-icon{
+.scores td span.pop{
   position: absolute;
   top: 0;
+}
+
+td.action-1{
+  width: 30px;
+}
+
+td.action-2{
+ width: 60px;
+}
+
+td.action-3{
+  width: 90px;
+}
+td.action-4{
+  width: 120px;
 }

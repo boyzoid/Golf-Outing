@@ -41,11 +41,21 @@
                 <tbody>
                     <tr v-for="g in outingGolfers">
                         <th><b-link @click="scoreGolfer( g )" :title="'Edit Score for ' + g.name "><pencil-icon :size="14"></pencil-icon></b-link> {{g.name}} <span class="small">({{courseHandicap(g.index)}})</span></th>
-                        <td v-for="p in $parent.lodash.range(1, 10)" class="text-center">{{ getGolferScore( g.scores, p) }}<circle-icon :size="8" v-if="golferGetsPop(g.index, holes[p-1].handicap)"></circle-icon></td>
-                        <td class="text-center">{{g.score.front}}</td>
-                        <td v-for="p in $parent.lodash.range(10, 19)" class="text-center">{{ getGolferScore( g.scores, p) }}<circle-icon :size="8" v-if="golferGetsPop(g.index, holes[p-1].handicap)"></circle-icon></td>
-                        <td class="text-center">{{g.score.back}}</td>
-                        <td class="text-center">{{ g.score.front + g.score.back}}</td>
+                        <td v-for="p in $parent.lodash.range(1, 10)" class="text-center">
+                            {{ getGolferScore( g.scores, p) }}
+                            <span class="pop" v-if="golferGetsPop(g.index, holes[p-1].handicap)">
+                                <circle-icon :size="7" v-for="f in popsPerHole(g.index, holes[p-1].handicap)" :key="f"></circle-icon>
+                            </span>
+                        </td>
+                        <td class="text-center table-info" >{{g.score.front }}</td>
+                        <td v-for="p in $parent.lodash.range(10, 19)" class="text-center">
+                            {{ getGolferScore( g.scores, p) }}
+                            <span class="pop" v-if="golferGetsPop(g.index, holes[p-1].handicap)">
+                                <circle-icon :size="7" v-for="b in popsPerHole(g.index, holes[p-1].handicap)" :key="b"></circle-icon>
+                            </span>
+                        </td>
+                        <td class="text-center table-info">{{g.score.back}}</td>
+                        <td class="text-center table-warning">{{ g.score.front + g.score.back }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -53,7 +63,7 @@
         <b-modal id="edit-scores" title="Enter Scores" size="xl" @ok="submitScores">
             <h4>{{course.name}}</h4>
             <h5>{{edit.name}}</h5>
-            <table class="table table-condensed">
+            <table class="table table-sm">
                 <thead>
                     <tr>
                         <th>Hole</th>
@@ -147,7 +157,8 @@
                         {id: null, score: null},
                         {id: null, score: null},
                     ]
-                }
+                },
+                handicapPrime: 0
             }
         },
         created: function(){
@@ -173,6 +184,10 @@
                             self.course = result.data.course;
                             self.holes = result.data.holes;
                             self.outingGolfers = result.data.outingGolfers;
+
+                            self.handicapPrime = self.courseHandicap(this.lodash.minBy( self.outingGolfers, function(g){
+                                return self.courseHandicap( g.index );
+                            }).index)
                         }
                         else{
                             self.loadError = "There was a problem loading the outing."
@@ -196,6 +211,20 @@
                 let hcap = this.courseHandicap( idx );
                 let hcap_prime = this.handicapPrime;
                 return (hcap - hcap_prime) >= holeHandicap;
+            },
+            popsPerHole( idx, holeHandicap ){
+                let hcap = this.courseHandicap( idx );
+                let pops = hcap - this.handicapPrime;
+                if( pops < 18 && this.golferGetsPop( idx, holeHandicap ) ){
+                    return 1
+                }
+                if( pops > 18 && pops-18 >= holeHandicap  ){
+                    return 2
+                }
+                else{
+                    return 1
+                }
+
             },
             scoreGolfer( golfer ){
                 this.edit.golferId = golfer.golferId;
@@ -235,12 +264,6 @@
                     ret = ret + this.holes[i].par
                 }
                 return ret;
-            },
-            handicapPrime(){
-                let self = this;
-                return this.lodash.maxBy( this.outingGolfers, function(g){
-                    return self.courseHandicap( g.index );
-                })
             }
 
         }

@@ -31,35 +31,53 @@ component accessors=true{
 
     public function listOutingGolfers( numeric id, boolean returnScores=true ){
         var ret = [];
-        var golfers = queryExecute("select og.id, og.golfer_id, concat(g.first_name, ' ' , last_name) golfer, g.nickname, og.handicap_index, h.number, h.par, h.handicap,  gs.score
-                                    from outing_golfer og
-                                    join outing o on og.outing_id = o.id
+        var golfers = queryExecute("select og.id, og.golfer_id, concat(g.first_name, ' ' , last_name) golfer, g.nickname, og.handicap_index, h.number, h.par, h.handicap, gs.score
+                                    from hole h
+                                    join outing o on h.course_id = o.course_id
+                                    join outing_golfer og on o.id = og.outing_id
                                     join golfer g on og.golfer_id = g.id
                                     left join golfer_score gs on og.id = gs.outing_golfer_id
-                                    left join hole h on gs.hole_id = h.id
+
                                     where o.id = :id
                                     order by g.last_name, g.first_name, h.number", { id: id });
         cfloop( query=golfers, group='golfer' ){
             var g = { 'name': golfers.golfer, 'index': golfers.handicap_index, 'scores' : {}, 'id': golfers.id, 'golferId': golfers.golfer_id, 'score' : {'front' : 0, 'back' :0} };
             cfloop(){
-                if( isNumeric( golfers.number ) ){
+                    var score = val( golfers.score );
                     g.scores[golfers.number]= {
-                        'score' : golfers.score,
-                        'relationToPar': golfers.score - golfers.par,
+                        'score' : val( score ),
+                        'relationToPar': score == 0 ? 0 : score - golfers.par ,
                     };
                     if( golfers.number < 10 ){
-                        g.score.front = g.score.front + golfers.score;
+                        g.score.front = g.score.front + score;
                     }
                     else{
-                        g.score.back = g.score.back + golfers.score;
+                        g.score.back = g.score.back + score;
                     }
 
-                }
 
             }
             ret.append( g );
         }
         return ret;
+    }
+
+    public function addGolfersToOuting( numeric id=0, array golfers ){
+        for( var g in golfers ){
+            queryExecute('insert into outing_golfer( golfer_id, outing_id)
+                        select :golferId, :id
+                        from dual
+                        where not exists (select id from outing_golfer where golfer_id = :golferId and outing_id = :id)', {id: id, golferId: g });
+        }
+    }
+
+    public function removeGolferFromOuting( numeric id=0 ){
+        queryExecute( 'delete from golfer_score where outing_golfer_id = :id', { id : id } );
+        queryExecute( 'delete from outing_golfer where id = :id ', { id : id } );
+    }
+
+    public function updateGolferHandicap( struct golfer ){
+        queryExecute( 'update outing_golfer set handicap_index = :idx where id = :id ', { id: golfer.id, idx: golfer.index } );
     }
 
     private function addOuting( outing ){

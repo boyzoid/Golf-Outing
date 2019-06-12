@@ -51,15 +51,26 @@
                             </b-form-group>
                         </b-col>
                     </b-row>
-                    <b-row>
-                        <b-col class="text-center mb-2">
-                            <span class="bold">Golfers Playing</span>
-                            <b-link class="ml-2" title="Add Golfer"><plus-circle-icon title="Add Golfer"></plus-circle-icon></b-link>
+                    <b-row class="mt-2">
+                        <b-col>
+                            <b-button type="submit" variant="primary"><content-save-icon></content-save-icon> Save Outing</b-button>
+                            <b-link class="btn btn-outline-secondary ml-2" :to="{ name: 'outings'}">
+                                Cancel
+                            </b-link>
                         </b-col>
                     </b-row>
-                    <b-row>
+                    <b-row  v-if="outing.id">
+                        <b-col class="text-center mb-2">
+                            <span class="bold">Golfers</span>
+                            <b-link class="ml-2" title="Add Golfer" @click="openAddGolfers()"><plus-circle-icon title="Add Golfers To Outing"></plus-circle-icon></b-link>
+                        </b-col>
+                    </b-row>
+                    <b-row v-if="outing.id">
                         <b-col class="col-md-8 offset-md-2">
-                            <table class="table table-striped table-hover table-sm">
+                            <b-alert :show="outingGolfers.length == 0" variant="info">
+                                There are currently no golfers assigned to this outing. <b-link href="#" @click="openAddGolfers()">click here</b-link> to add golfers.
+                            </b-alert>
+                            <table class="table table-striped table-hover table-sm" v-if="outingGolfers.length > 0">
                                 <thead class="thead-dark">
                                     <tr>
                                         <th></th>
@@ -69,25 +80,55 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="golfer in outingGolfers">
-                                        <td></td>
-                                        <td>{{golfer.name}}</td>
+                                        <td class="action-2">
+                                            <a class="text-danger pr-2" href="#" @click="removeGolfer( golfer.id)" :title="'Remove ' + golfer.name + ' from outing'"><trash-can-icon :size="20" :title="'Remove ' + golfer.name + ' from outing'"></trash-can-icon></a>
+                                            <a class="text-primary " href="#" @click="openEdit(golfer)" :title="'Update handicap for ' + golfer.name"><pencil-icon :size="20" :title="'Update handicap for ' + golfer.name"></pencil-icon></a>
+                                        </td>
+                                        <td >{{golfer.name}}</td>
                                         <td>{{golfer.index}}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </b-col>
                     </b-row>
-                    <b-row class="mt-2">
-                        <b-col>
-                            <b-button type="submit" variant="primary"><content-save-icon></content-save-icon> Save Outing</b-button>
-                            <b-link class="btn btn-outline-secondary ml-2" :to="{ name: 'outings'}">
-                                Cancel
-                            </b-link>
-                        </b-col>
-
-                    </b-row>
                 </b-container>
-
+                <b-modal id="add-to-outing" title="Add Golfer to Outing" v-model="addToOuting" @ok="putGolfers" v-if="outing.id">
+                <b-form>
+                    <b-alert variant="info" :show="golfers.length == 0">
+                        <p>There are no available golfers to add.</p>
+                        <p>Click here to add a new golfer.</p>
+                    </b-alert>
+                    <b-form-group label="Golfers" label-for="Golfers" v-if="golfers.length > 0">
+                        <b-form-select v-model="addGolfers"  id="golfers" name="golfers" placeholder="Choose golfers" multiple>
+                            <option v-for="golfer in golfers" :value="golfer.id">{{golfer.fullname}}</option>
+                        </b-form-select>
+                    </b-form-group>
+                </b-form>
+                    <template slot="modal-footer" slot-scope="{ ok, close }">
+                        <b-button variant="secondary" @click="close()">
+                            Cancel
+                        </b-button>
+                        <b-button variant="primary" @click="ok()" v-if="golfers.length > 0">
+                            Add Golfers To Outing
+                        </b-button>
+                    </template>
+                </b-modal>
+                <b-modal id="edit-handicap" :title="'Edit Handicap for ' + golfer.name" v-model="editHandicap" @ok="updateHandicap" v-if="outing.id">
+                    <b-form>
+                        <b-form-group label="Handicap Index" label-for="index">
+                            <b-form-input name="index" id="index" v-model="golfer.index" type="text" v-validate="{required: true, decimal: 1, max_value: 36, min_value: 0}"></b-form-input>
+                            <span class="text-danger">{{veeErrors.first('index')}}</span>
+                        </b-form-group>
+                    </b-form>
+                    <template slot="modal-footer" slot-scope="{ ok, close }">
+                        <b-button variant="secondary" @click="close()">
+                            Cancel
+                        </b-button>
+                        <b-button variant="primary" @click="ok()">
+                            Update Handicap
+                        </b-button>
+                    </template>
+                </b-modal>
             </b-form>
         </div>
     </div>
@@ -97,8 +138,10 @@
     import ArrowLeftIcon from "vue-material-design-icons/ArrowLeft";
     import ContentSaveIcon from "vue-material-design-icons/ContentSave";
     import PlusCircleIcon from "vue-material-design-icons/PlusCircle";
+    import TrashCanIcon from "vue-material-design-icons/TrashCan";
+    import PencilIcon from "vue-material-design-icons/Pencil";
     export default {
-        components: {PlusCircleIcon, ContentSaveIcon, ArrowLeftIcon},
+        components: {PencilIcon, TrashCanIcon, PlusCircleIcon, ContentSaveIcon, ArrowLeftIcon},
         data() {
             return {
                 outing: {id: 0},
@@ -108,7 +151,11 @@
                 loadError: null,
                 courses: [],
                 golfers: [],
-                outingGolfers: []
+                outingGolfers: [],
+                addToOuting: false,
+                addGolfers:[],
+                golfer: {id: null, name: null, index:0},
+                editHandicap: false
             }
         },
         created: function(){
@@ -122,9 +169,6 @@
             fetchOuting: function(){
                 if( this.courses.length == 0 ){
                     this.fetchCourses();
-                }
-                if( this.golfers.length == 0 ){
-                    this.fetchGolfers();
                 }
 
                 let self = this;
@@ -140,6 +184,7 @@
                         if( result.status == 200 && result.data.success ){
                             self.outing = result.data.outing;
                             self.outingGolfers = result.data.outingGolfers;
+                            self.golfers = result.data.golfers;
                         }
                         else{
                             self.loadError = "There was a problem loading the outing."
@@ -157,19 +202,6 @@
                         self.loading = false;
                         if( result.status == 200 && result.data.success ){
                             self.courses = result.data.courses;
-                        }
-                    }, error => {
-                        console.log( error );
-                    })
-            },
-            fetchGolfers(){
-                let self = this;
-                self.loading = true;
-                axios.get('/api/golfers')
-                    .then( result => {
-                        self.loading = false;
-                        if( result.status == 200 && result.data.success ){
-                            self.golfers = result.data.golfers;
                         }
                     }, error => {
                         console.log( error );
@@ -204,6 +236,82 @@
                             }, error => {
                                 console.log( error );
                                 this.error = true;
+                            })
+                    }
+                });
+            },
+            putGolfers( e ){
+                e.preventDefault();
+                let self = this;
+                if( this.addGolfers.length > 0 ){
+                    axios({
+                        method: 'POST',
+                        url: '/api/addToOuting',
+                        data: {outing: this.outing, golfers: this.addGolfers },
+                        headers: {
+                            'token': self.$store.state.token
+                        },
+                        responseType: 'json'
+                    }).then( result => {
+                        if( result.data.success ){
+                            self.golfers = result.data.golfers;
+                            self.outingGolfers = result.data.outingGolfers;
+                            this.addToOuting = false;
+                        }
+                    }, error => {
+                        console.log( error );
+                    })
+                }
+                else{
+                    this.addToOuting = false
+                }
+            },
+            openAddGolfers(){
+                this.addGolfers = [];
+                this.addToOuting = true;
+            },
+            removeGolfer( id ){
+                let self = this;
+                axios({
+                    method: 'POST',
+                    url: '/api/removeGolferFromOuting',
+                    data: {id: id, outing: this.outing },
+                    headers: {
+                        'token': self.$store.state.token
+                    },
+                    responseType: 'json'
+                }).then( result => {
+                    if( result.data.success ){
+                        self.golfers = result.data.golfers;
+                        self.outingGolfers = result.data.outingGolfers;
+                    }
+                }, error => {
+                    console.log( error );
+                })
+            },
+            openEdit(g){
+                this.golfer = g;
+                this.editHandicap = true;
+            },
+            updateHandicap( e ){
+                e.preventDefault();
+                this.$validator.validate().then(valid => {
+                    if (valid ) {
+                        let self = this;
+                        axios({
+                            method: 'POST',
+                            url: '/api/updateHandicap',
+                            data: {golfer: this.golfer },
+                            headers: {
+                                'token': self.$store.state.token
+                            },
+                            responseType: 'json'
+                        })
+                            .then( result => {
+                                console.log( result );
+                                self.editHandicap = false;
+                            }, error => {
+                                console.log( error );
                             })
                     }
                 });
