@@ -36,12 +36,13 @@ component accessors=true{
                                     join outing o on h.course_id = o.course_id
                                     join outing_golfer og on o.id = og.outing_id
                                     join golfer g on og.golfer_id = g.id
-                                    left join golfer_score gs on og.id = gs.outing_golfer_id
+                                    left join golfer_score gs on og.id = gs.outing_golfer_id AND gs.hole_id = h.id
 
                                     where o.id = :id
                                     order by g.last_name, g.first_name, h.number", { id: id });
         cfloop( query=golfers, group='golfer' ){
             var g = { 'name': golfers.golfer, 'index': golfers.handicap_index, 'scores' : {}, 'id': golfers.id, 'golferId': golfers.golfer_id, 'score' : {'front' : 0, 'back' :0} };
+                var count = 1;
             cfloop(){
                     var score = val( golfers.score );
                     g.scores[golfers.number]= {
@@ -54,8 +55,6 @@ component accessors=true{
                     else{
                         g.score.back = g.score.back + score;
                     }
-
-
             }
             ret.append( g );
         }
@@ -78,6 +77,12 @@ component accessors=true{
 
     public function updateGolferHandicap( struct golfer ){
         queryExecute( 'update outing_golfer set handicap_index = :idx where id = :id ', { id: golfer.id, idx: golfer.index } );
+    }
+
+    public function postScore( numeric id, array scores ){
+        for( var score in scores ){
+            queryExecute('insert into golfer_score VAlUES( :id, :holeId, :score ) on duplicate key update score = :score', {id: id, holeId: score.id, score: score.score} );
+        }
     }
 
     private function addOuting( outing ){

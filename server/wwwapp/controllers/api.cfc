@@ -83,4 +83,13 @@ component accessors=true{
         outingService.updateGolferHandicap( rc.golfer );
         variables.fw.renderData().data( { 'success' : true } ).type( 'json' );
     }
+
+    public function postScore( Any rc ){
+        param name='rc.id' default=0;
+        param name='rc.golferid' default=0;
+        param name='rc.scores' default=[];
+        outingService.postScore( rc.golferId, rc.scores );
+        var outingGolfers = outingService.listOutingGolfers( rc.id );
+        variables.fw.renderData().data( { 'success' : true, 'outingGolfers': outingGolfers } ).type( 'json' );
+    }
 }

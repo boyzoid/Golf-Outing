@@ -96,7 +96,7 @@
                 <tr>
                     <td></td>
                     <td v-for="p in lodash.range( 10, 19)" class="text-center">
-                        <b-form-input type="text" class="course-input mx-auto" :id="'s'+p" v-model="edit.scores[p-1].score" maxlength="1" ></b-form-input>
+                        <b-form-input type="text" class="course-input mx-auto" :id="'s'+p" v-model="edit.scores[p-1].score" maxlength="2" ></b-form-input>
                     </td>
                 </tr>
                 </tbody>
@@ -215,7 +215,7 @@
             popsPerHole( idx, holeHandicap ){
                 let hcap = this.courseHandicap( idx );
                 let pops = hcap - this.handicapPrime;
-                if( pops < 18 && this.golferGetsPop( idx, holeHandicap ) ){
+                if( pops < 18  ){
                     return 1
                 }
                 if( pops > 18 && pops-18 >= holeHandicap  ){
@@ -233,7 +233,7 @@
                 this.edit.scores = [];
                 if( Object.keys( golfer.scores ).length > 0 ){
                     for( let score in golfer.scores ){
-                        this.edit.scores.push( {'id': this.holes[ score-1 ].id, 'score': golfer.scores[ score ].score})
+                        this.edit.scores.push( {'id': this.holes[ score-1 ].id, 'score': golfer.scores[ score ].score != 0 ? golfer.scores[ score ].score : null })
                     }
                 }
                 else{
@@ -243,11 +243,25 @@
                 }
 
                 this.$bvModal.show('edit-scores');
-                console.log( this.edit );
             },
             submitScores( e ){
                 e.preventDefault();
-                console.log( 'submitted' );
+                let self = this;
+                axios({
+                    method: 'POST',
+                    url: '/api/postScore',
+                    data: {id: self.outing.id, golferId: self.edit.outingGolferId, scores: self.edit.scores },
+                    headers: {
+                        'token': self.$store.state.token
+                    },
+                    responseType: 'json'
+                })
+                    .then( result => {
+                        self.outingGolfers = result.data.outingGolfers;
+                        self.$bvModal.hide('edit-scores');
+                    }, error => {
+                        console.log( error );
+                    })
             }
         },
         computed:{
