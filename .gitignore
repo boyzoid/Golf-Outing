@@ -19,3 +19,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+/server/www/favicon.ico
+/server/www/index.html

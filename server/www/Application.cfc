@@ -94,7 +94,8 @@ component extends="framework.one" {
 		applicationKey: "golf_outing",
 		diLocations: ['/model'],
 		defaultSection: 'api',
-		reloadApplicationOnEveryRequest = true
+		reloadApplicationOnEveryRequest = true,
+		unhandledPaths: '/flex2gateway,/assets'
 	};
 
 	ormPaths=["/model/orm"];

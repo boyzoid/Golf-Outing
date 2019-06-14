@@ -179,9 +179,7 @@
                 self.loading = true;
                 self.error = null
                 axios.get('/api/course/id/' + self.$route.params.id,{
-                    headers: {
-                        'token': self.$store.state.token
-                    },
+
                     })
                     .then( result => {
                         self.loading = false;
@@ -211,9 +209,7 @@
                             method: 'POST',
                             url: '/api/putCourse',
                             data: {course: self.course, holes: self.holes },
-                            headers: {
-                                'token': self.$store.state.token
-                            },
+
                             responseType: 'json'
                         })
                             .then( result => {
