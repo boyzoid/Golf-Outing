@@ -18,7 +18,7 @@ component accessors=true{
     }
 
     public function default( Any rc ){
-                variables.fw.renderData().data( { 'success' : false, 'error': 'Unauthorized access' } ).type( 'json' );
+
     }
 
     public function login( Any rc ){

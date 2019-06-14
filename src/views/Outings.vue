@@ -64,10 +64,6 @@
             key: 'course',
             label: 'Course'
           },
-          count:{
-            label: '# of golfers',
-            class: 'text-center'
-          },
           manager:{
             key: 'organizer',
             label: 'Organizer'
