@@ -9,7 +9,6 @@
             <h2 class="text-center">{{ outing.date | moment('dddd MMMM D, YYYY')}}</h2>
             <h2 class="text-center">{{ course.name }}</h2>
             <h3 class="text-center">{{ course.city}}, {{course.state}}</h3>
-
             <table class="table table-hover scores">
                 <thead>
                     <tr>
@@ -40,25 +39,40 @@
                 </thead>
                 <tbody>
                     <tr v-for="g in outingGolfers" class="golfers">
-                        <th><b-link @click="scoreGolfer( g )" :title="'Edit Score for ' + g.name "><pencil-icon :size="14"></pencil-icon></b-link> {{g.name}} <span class="small">({{courseHandicap(g.index)}})</span></th>
+                        <th><b-link @click="scoreGolfer( g )" :title="'Edit Score for ' + g.name "><pencil-icon :size="14"></pencil-icon></b-link> {{g.name}} <span class="small">({{g.handicap}})</span></th>
                         <td v-for="p in $parent.lodash.range(1, 10)" class="text-center score" :class="getScoreClass(g.scores, p)">
                             {{ getGolferScore( g.scores, p) }}
-                            <span class="pop" v-if="golferGetsPop(g.index, holes[p-1].handicap)">
-                                <circle-icon :size="7" v-for="f in popsPerHole(g.index, holes[p-1].handicap)" :key="f"></circle-icon>
+                            <span class="pop" v-if="golferGetsPop(g.handicap, holes[p-1].handicap)">
+                                <circle-icon :size="7" v-for="f in popsPerHole(g.handicap, holes[p-1].handicap)" :key="f"></circle-icon>
                             </span>
                         </td>
                         <td class="text-center table-secondary score" >{{g.score.front }}</td>
-                        <td v-for="p in $parent.lodash.range(10, 19)" class="text-center">
+                        <td v-for="p in $parent.lodash.range(10, 19)" class="text-center score " :class="getScoreClass(g.scores, p)">
                             {{ getGolferScore( g.scores, p) }}
-                            <span class="pop" v-if="golferGetsPop(g.index, holes[p-1].handicap)">
-                                <circle-icon :size="7" v-for="b in popsPerHole(g.index, holes[p-1].handicap)" :key="b"></circle-icon>
+                            <span class="pop" v-if="golferGetsPop(g.handicap, holes[p-1].handicap)">
+                                <circle-icon :size="7" v-for="b in popsPerHole(g.handicap, holes[p-1].handicap)" :key="b"></circle-icon>
                             </span>
                         </td>
                         <td class="text-center table-secondary score">{{g.score.back}}</td>
-                        <td class="text-center table-info score">{{ g.score.front + g.score.back }}</td>
+                        <td class="text-center table-info">{{ g.score.total }} <span v-if="g.score.total > 0"> ({{g.score.net}})</span></td>
                     </tr>
                 </tbody>
             </table>
+            <div v-if="Object.keys( skins ).length > 0" class="col-6 offset-3">
+                <h3 class="text-center">Skins (Net)</h3>
+                <table class="table table-striped table-hover">
+                    <tbody>
+                        <tr v-for="skin in skins">
+                            <td>{{skin.name}} ({{skin.holes.length}}) ${{(((outingGolfers.length * 5)/totalSkins)*skin.holes.length).toFixed(2)}}</td>
+                            <td>
+                                <div v-for="hole in skin.holes">
+                                    Hole: {{ hole.hole }} ( {{hole.score}} )
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <b-modal id="edit-scores" title="Enter Scores" size="xl" @ok="submitScores">
             <h4>{{course.name}}</h4>
@@ -158,14 +172,24 @@
                         {id: null, score: null},
                     ]
                 },
-                handicapPrime: 0
+                handicapPrime: 0,
+                totalSkins: 0
             }
         },
         created: function(){
             this.fetchOuting();
         },
         watch:{
-            '$route' : 'fetchOuting'
+            '$route' : 'fetchOuting',
+            outingGolfers: function( n, o ){
+                for( let i=0; i<n.length; i++ ){
+                    n[i].handicap = this.courseHandicap( n[i].index);
+                    n[i].score.net = n[i].score.total - n[i].handicap;
+                }
+                this.handicapPrime =  this.lodash.minBy(n, function(g){
+                    return g.handicap;
+                }).handicap;
+            }
         },
         methods: {
             fetchOuting(){
@@ -182,10 +206,6 @@
                             self.course = result.data.course;
                             self.holes = result.data.holes;
                             self.outingGolfers = result.data.outingGolfers;
-
-                            self.handicapPrime = self.courseHandicap(this.lodash.minBy( self.outingGolfers, function(g){
-                                return self.courseHandicap( g.index );
-                            }).index)
                         }
                         else{
                             self.loadError = "There was a problem loading the outing."
@@ -205,8 +225,7 @@
                 }
                 return ret;
             },
-            golferGetsPop( idx, holeHandicap ){
-                let hcap = this.courseHandicap( idx );
+            golferGetsPop( hcap, holeHandicap ){
                 let hcap_prime = this.handicapPrime;
                 return (hcap - hcap_prime) >= holeHandicap;
             },
@@ -224,8 +243,7 @@
                 }
                 return ret
             },
-            popsPerHole( idx, holeHandicap ){
-                let hcap = this.courseHandicap( idx );
+            popsPerHole( hcap, holeHandicap ){
                 let pops = hcap - this.handicapPrime;
                 if( pops < 18  ){
                     return 1
@@ -288,6 +306,45 @@
                     ret = ret + this.holes[i].par
                 }
                 return ret;
+            },
+            skins(){
+                let ret = {};
+                let lows = {};
+                this.totalSkins = 0;
+                for( let i=1; i<19; i++ ){
+                    let low = 999;
+                    let holeHandicap = this.holes[i-1].handicap;
+                    for( let g=0; g<this.outingGolfers.length; g++ ){
+                        let golfer = this.outingGolfers[g];
+                        let hole = golfer.scores[i];
+                        let netScore = hole.score;
+                        if ( this.golferGetsPop( golfer.handicap, holeHandicap ) ){
+                            netScore = netScore - this.popsPerHole( golfer.handicap, holeHandicap );
+                        }
+                        if( netScore > 0 && netScore == low ){
+                            lows[i].push( {golfer: golfer.name, hole: i, score: netScore })
+                        }
+                        if( netScore > 0 && netScore < low ){
+                            low = netScore;
+                            lows[i] = [{id: golfer.id, name: golfer.name, hole: i, score: netScore }];
+                        }
+                    }
+
+                    if(lows[i].length == 1 ){
+                        let golfer = lows[i][0].name;
+                        let id = lows[i][0].id
+                        let score = lows[i][0].score;
+                        let hole = lows[i][0].hole;
+                        this.totalSkins = this.totalSkins + 1;
+                        if( ret[id] == undefined ){
+                            ret[id] = {name: golfer, holes: [ {hole: hole, score: score} ] }
+                        }
+                        else{
+                            ret[id].holes.push( {hole: hole, score: score } )
+                        }
+                    }
+                }
+                return ret
             }
 
         }

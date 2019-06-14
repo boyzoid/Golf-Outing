@@ -23,6 +23,7 @@
     "vee-validate": "^2.2.10",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.4",
+    "vue-currency-filter": "^3.4.2",
     "vue-datetime": "^1.0.0-beta.10",
     "vue-lodash": "^2.0.2",
     "vue-material-design-icons": "^3.2.0",

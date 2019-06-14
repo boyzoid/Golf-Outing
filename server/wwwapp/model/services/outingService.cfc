@@ -41,7 +41,7 @@ component accessors=true{
                                     where o.id = :id
                                     order by g.last_name, g.first_name, h.number", { id: id });
         cfloop( query=golfers, group='golfer' ){
-            var g = { 'name': golfers.golfer, 'index': golfers.handicap_index, 'scores' : {}, 'id': golfers.id, 'golferId': golfers.golfer_id, 'score' : {'front' : 0, 'back' :0} };
+            var g = { 'name': golfers.golfer, 'index': golfers.handicap_index, 'scores' : {}, 'id': golfers.id, 'golferId': golfers.golfer_id, 'score' : {'front' : 0, 'back' :0, 'total': 0} };
                 var count = 1;
             cfloop(){
                     var score = val( golfers.score );
@@ -56,6 +56,7 @@ component accessors=true{
                         g.score.back = g.score.back + score;
                     }
             }
+            g.score.total = g.score.front + g.score.back
             ret.append( g );
         }
         return ret;
