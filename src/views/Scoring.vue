@@ -268,13 +268,16 @@
         watch:{
             '$route' : 'fetchOuting',
             outingGolfers: function( n, o ){
-                for( let i=0; i<n.length; i++ ){
-                    n[i].handicap = this.courseHandicap( n[i].index);
-                    n[i].score.net = n[i].score.total - n[i].handicap;
-                }
-                this.handicapPrime =  this.lodash.minBy(n, function(g){
-                    return g.handicap;
-                }).handicap;
+               if( n.length > 0 ){
+                   for( let i=0; i<n.length; i++ ){
+                       n[i].handicap = this.courseHandicap( n[i].index);
+                       n[i].score.net = n[i].score.total - n[i].handicap;
+                   }
+                   this.handicapPrime =  this.lodash.minBy(n, function(g){
+                       return g.handicap;
+                   }).handicap;
+               }
+
             }
         },
         methods: {
@@ -457,6 +460,8 @@
                 let ret = {};
                 let lows = {};
                 this.totalSkins = 0;
+                if( this.outingGolfers.length > 0 ){
+
                 for( let i=1; i<19; i++ ){
                     let low = 999;
                     let holeHandicap = this.holes[i-1].handicap;
@@ -489,6 +494,7 @@
                             ret[id].holes.push( {hole: hole, score: score } )
                         }
                     }
+                }
                 }
                 return ret
             }
