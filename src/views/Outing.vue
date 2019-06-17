@@ -175,7 +175,9 @@
                 self.loading = true;
                 self.error = null
                 axios.get('/api/outing/id/' + self.$route.params.id,{
-
+                    headers: {
+                        token: self.$store.state.token
+                    },
                 })
                     .then( result => {
                         self.loading = false;
@@ -195,7 +197,11 @@
             fetchCourses(){
                 let self = this;
                 self.loading = true;
-                axios.get('/api/courses')
+                axios.get('/api/courses',{
+                    headers: {
+                        token: self.$store.state.token
+                    },
+                })
                     .then( result => {
                         self.loading = false;
                         if( result.status == 200 && result.data.success ){
@@ -217,7 +223,9 @@
                             method: 'POST',
                             url: '/api/putOuting',
                             data: {outing: this.outing },
-
+                            headers: {
+                                token: self.$store.state.token
+                            },
                             responseType: 'json'
                         })
                             .then( result => {
@@ -244,7 +252,9 @@
                         method: 'POST',
                         url: '/api/addToOuting',
                         data: {outing: this.outing, golfers: this.addGolfers },
-
+                        headers: {
+                            token: self.$store.state.token
+                        },
                         responseType: 'json'
                     }).then( result => {
                         if( result.data.success ){
@@ -270,7 +280,9 @@
                     method: 'POST',
                     url: '/api/removeGolferFromOuting',
                     data: {id: id, outing: this.outing },
-
+                    headers: {
+                        token: self.$store.state.token
+                    },
                     responseType: 'json'
                 }).then( result => {
                     if( result.data.success ){
@@ -294,7 +306,9 @@
                             method: 'POST',
                             url: '/api/updateHandicap',
                             data: {golfer: this.golfer },
-
+                            headers: {
+                                token: self.$store.state.token
+                            },
                             responseType: 'json'
                         })
                             .then( result => {

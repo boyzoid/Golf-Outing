@@ -37,7 +37,9 @@
             method: 'POST',
             url: '/api/login',
             data: self.input,
-
+          headers: {
+            token: self.$store.state.token
+          },
             responseType: 'json'
         })
         .then( result => {

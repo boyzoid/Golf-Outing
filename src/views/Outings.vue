@@ -81,7 +81,11 @@
       fetchOutings(){
         let self = this;
         self.loading = true;
-        axios.get('/api/outings')
+        axios.get('/api/outings',{
+          headers: {
+            token: self.$store.state.token
+          },
+        })
                 .then( result => {
                   self.loading = false;
                   if( result.status == 200 && result.data.success ){

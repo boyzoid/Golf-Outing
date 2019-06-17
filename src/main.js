@@ -13,7 +13,7 @@ import VeeValidate from 'vee-validate';
 import Datetime from 'vue-datetime';
 
 axios.defaults.baseURL = process.env.VUE_APP_API_ROOT;
-axios.defaults.headers.common['token'] = JSON.parse( localStorage.getItem('store') ).token;
+//axios.defaults.headers.common['token'] = JSON.parse( localStorage.getItem('store') ).token;
 Vue.config.productionTip = false
 
 const options = { name: 'lodash' }

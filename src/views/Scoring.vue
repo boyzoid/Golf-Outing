@@ -286,7 +286,9 @@
                 self.loading = true;
                 self.error = null
                 axios.get('/api/outingdetails/id/' + self.$route.params.id,{
-
+                    headers: {
+                        token: self.$store.state.token
+                    },
                 })
                     .then( result => {
                         self.loading = false;
@@ -373,7 +375,9 @@
                     method: 'POST',
                     url: '/api/postScore',
                     data: {id: self.outing.id, golferId: self.edit.outingGolferId, scores: self.edit.scores },
-
+                    headers: {
+                        token: self.$store.state.token
+                    },
                     responseType: 'json'
                 })
                     .then( result => {
