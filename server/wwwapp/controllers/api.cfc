@@ -3,6 +3,7 @@ component accessors=true{
     property Any courseService;
     property Any outingService;
     property Any golferService;
+    property Any securityService;
 
     function init(fw) {
         variables.fw = fw;
@@ -22,7 +23,16 @@ component accessors=true{
     }
 
     public function login( Any rc ){
-        variables.fw.renderData().data( { 'success' : true, 'token': createUUID() } ).type( 'json' );
+        param name="rc.username" default='';
+        param name="password" default='';
+        var token = '';
+        var success = false;
+        var loginAttempt = securityService.login( rc.username, rc.password );
+        if(  loginAttempt.success ){
+            token = loginAttempt.token;
+            success = true;
+        }
+        variables.fw.renderData().data( { 'success' : success, 'token': token } ).type( 'json' );
     }
 
     public function courses( Any rc ){

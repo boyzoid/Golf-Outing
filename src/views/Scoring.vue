@@ -46,18 +46,96 @@
                                 <circle-icon :size="7" v-for="f in popsPerHole(g.handicap, holes[p-1].handicap)" :key="f"></circle-icon>
                             </span>
                         </td>
-                        <td class="text-center table-secondary score" >{{g.score.front }}</td>
+                        <td class="text-center table-secondary score bold" >{{g.score.front }}</td>
                         <td v-for="p in $parent.lodash.range(10, 19)" class="text-center score " :class="getScoreClass(g.scores, p)">
                             {{ getGolferScore( g.scores, p) }}
                             <span class="pop" v-if="golferGetsPop(g.handicap, holes[p-1].handicap)">
                                 <circle-icon :size="7" v-for="b in popsPerHole(g.handicap, holes[p-1].handicap)" :key="b"></circle-icon>
                             </span>
                         </td>
-                        <td class="text-center table-secondary score">{{g.score.back}}</td>
-                        <td class="text-center table-info">{{ g.score.total }} <span v-if="g.score.total > 0"> ({{g.score.net}})</span></td>
+                        <td class="text-center table-secondary score bold">{{g.score.back}}</td>
+                        <td class="text-center table-info bold">{{ g.score.total }} <span v-if="g.score.total > 0"> ({{g.score.net}})</span></td>
                     </tr>
                 </tbody>
             </table>
+            <div v-if="Object.keys( skins ).length > 0">
+                <h3 class="text-center">Teams <b-link class="ml-2" title="Add Team" @click="openTeam()"><plus-circle-icon title="Add Team"></plus-circle-icon></b-link></h3>
+                <div v-if="teams.length > 0">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th v-for="p in this.lodash.range(1, 10)" class="text-center">{{p}}</th>
+                            <th></th>
+                            <th v-for="p in this.lodash.range(10, 19)" class="text-center">{{p}}</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>Handicap</th>
+                            <th v-for="p in this.lodash.range(1, 10)" class="text-center">{{holes[p-1].handicap}}</th>
+                            <th></th>
+                            <th v-for="p in this.lodash.range(10, 19)" class="text-center">{{holes[p-1].handicap}}</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>Par</th>
+                            <th v-for="p in this.lodash.range(1, 10)" class="text-center">{{holes[p-1].par}}</th>
+                            <th class="text-center">{{courseFrontNine}}</th>
+                            <th v-for="p in this.lodash.range(10, 19)" class="text-center">{{holes[p-1].par}}</th>
+                            <th class="text-center">{{courseBackNine}}</th>
+                            <th class="text-center">{{ courseFrontNine + courseBackNine }}</th>
+                        </tr>
+
+                        </thead>
+                        <tbody>
+                        <tr v-for="(t, idx) in teams">
+                            <td class="action-1 align-middle">
+                                <b-link @click="removeTeam(idx)" class="text-danger"><trash-can-icon title="Remove Team"></trash-can-icon> </b-link>
+                            </td>
+                            <td class="align-middle">
+                                <div v-for="g in t.name ">{{ g }}</div>
+                            </td>
+                            <td v-for="p in $root.lodash.range(1, 10)" class="text-center align-middle">{{getTeamScoreForHole(t,p)}}</td>
+                            <td class="text-center table-secondary score align-middle bold" >{{ t.totals.front}}</td>
+                            <td v-for="p in $root.lodash.range(10, 19)" class="text-center align-middle">{{getTeamScoreForHole(t,p)}}</td>
+                            <td class="text-center table-secondary score align-middle bold" >{{t.totals.back}}</td>
+                            <td class="text-center table-info score align-middle bold" >{{t.totals.total}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div v-if="teams.length == 0" class="col-6 offset-3">
+                    <b-alert variant="info" show>There are no teams configured.</b-alert>
+                </div>
+                <b-modal id="edit-teams" title="Set Team" @ok="setTeam" v-model="editTeams">
+                    <b-form>
+                        <b-alert variant="info" :show="outingGolfers.length == 0">
+                            <p>There are no available golfers to add.</p>
+                            <p>Click here to add a new golfer.</p>
+                        </b-alert>
+                        <b-form-group label="Golfers" label-for="Golfers" v-if="outingGolfers.length > 0">
+                            <b-form-select v-model="team"  id="golfers" name="golfers" placeholder="Choose golfers" multiple>
+                                <option v-for="golfer in outingGolfers" :value="golfer">{{golfer.name}}</option>
+                            </b-form-select>
+                        </b-form-group>
+                    </b-form>
+                    <template slot="modal-footer" slot-scope="{ ok, close }">
+
+                        <b-button variant="secondary" @click="close()">
+                            Cancel
+                        </b-button>
+                        <b-button  variant="success" @click="ok()">
+                            Save Team
+                        </b-button>
+
+                    </template>
+                </b-modal>
+            </div>
             <div v-if="Object.keys( skins ).length > 0" class="col-6 offset-3">
                 <h3 class="text-center">Skins (Net)</h3>
                 <table class="table table-striped table-hover">
@@ -73,6 +151,7 @@
                     </tbody>
                 </table>
             </div>
+
         </div>
         <b-modal id="edit-scores" title="Enter Scores" size="xl" @ok="submitScores">
             <h4>{{course.name}}</h4>
@@ -137,8 +216,10 @@
     import CircleSmallIcon from "vue-material-design-icons/CircleSmall";
     import CircleMediumIcon from "vue-material-design-icons/CircleMedium";
     import PencilIcon from "vue-material-design-icons/Pencil";
+    import PlusCircleIcon from "vue-material-design-icons/PlusCircle";
+    import TrashCanIcon from "vue-material-design-icons/TrashCan";
     export default{
-        components: {PencilIcon, CircleMediumIcon, CircleSmallIcon, CircleIcon, StarIcon, ArrowLeftIcon},
+        components: {TrashCanIcon, PlusCircleIcon, PencilIcon,  CircleIcon, ArrowLeftIcon},
         data(){
             return {
                 loading: true,
@@ -173,7 +254,12 @@
                     ]
                 },
                 handicapPrime: 0,
-                totalSkins: 0
+                totalSkins: 0,
+                teams: [],
+                editTeams: false,
+                team:[],
+                teamIdx: -1,
+                teamScores:[]
             }
         },
         created: function(){
@@ -245,6 +331,9 @@
             },
             popsPerHole( hcap, holeHandicap ){
                 let pops = hcap - this.handicapPrime;
+                if( !this.golferGetsPop( hcap, holeHandicap ) ){
+                    return 0;
+                }
                 if( pops < 18  ){
                     return 1
                 }
@@ -290,6 +379,63 @@
                     }, error => {
                         console.log( error );
                     })
+            },
+            openTeam( ){
+                this.team=[];
+                this.editTeams = true;
+            },
+            setTeam( e ){
+                e.preventDefault();
+                let team = {name: [], scores: [], totals: {front: 0, back: 0, total: 0} };
+
+                for( let i=0; i<this.team.length; i++ ){
+                    let golfer = this.team[ i ];
+                    team.name.push( golfer.name );
+                }
+                for( let j=0; j<18; j++){
+                    let netScore = 99;
+                    for( let k=0; k<this.team.length; k++ ){
+                        let golfer = this.team[k];
+                        let golferScore = golfer.scores[ j+1 ].score;
+                        let pops = this.popsPerHole( golfer.handicap, this.holes[j].handicap );
+                        if( (golferScore - pops) < netScore ){
+                            netScore = golferScore - pops;
+                        }
+
+                    }
+                    if( netScore == 99 ){
+                        netScore = 0
+                    }
+                    team.scores.push( netScore );
+                    team.totals.total = team.totals.total + netScore;
+                    if( j < 10 ){
+                        team.totals.front = team.totals.front + netScore;
+                    }
+                    else{
+                        team.totals.back = team.totals.back + netScore;
+                    }
+                }
+                if( this.teamIdx < 0 ){
+                    this.teams.push( team );
+                }
+                else{
+                    this.teams[ this.teamIdx ] = team;
+                }
+                this.editTeams = false;
+                this.teamIdx = -1;
+                this.team = [];
+            },
+            getTeamScoreForHole( team, hole ){
+                let ret = 0;
+                if( team.scores != undefined && team.scores[hole-1] != undefined ){
+                    ret = team.scores[hole-1]
+                }
+                return ret;
+            },
+            removeTeam( idx ){
+                if( this.teams[idx] != undefined ){
+                    this.teams.splice( idx, 1 );
+                }
             }
         },
         computed:{
