@@ -485,7 +485,7 @@
                         }
                     }
 
-                    if(lows[i].length == 1 ){
+                    if(lows[i] != undefined && lows[i].length == 1 ){
                         let golfer = lows[i][0].name;
                         let id = lows[i][0].id
                         let score = lows[i][0].score;
