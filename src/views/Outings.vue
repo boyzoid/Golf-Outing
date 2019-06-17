@@ -8,6 +8,7 @@
           <plus-icon></plus-icon> Add Outing
         </b-link>
         <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="outing-table" v-if="rows > perPage"></b-pagination>
+        <div class="table-responsive">
         <b-table id="course-table" :items="outings" :fields="fields" :per-page="perPage" :current-page="currentPage" :striped="true" :hover="true">
           <template slot="actions" slot-scope="row">
             <b-link class="btn btn-outline-primary btn-sm" :to="{ name: 'outing', params: { id: row.item.id }}" title="Edit Outing">
@@ -28,6 +29,7 @@
             {{ row.item.date | moment('dddd MMMM D, YYYY')}} {{ row.item.teeTime | moment('h:mm a')}}
           </template>
         </b-table>
+        </div>
       </div>
       <div v-if="outings.length == 0">
         <div class="alert alert-info">

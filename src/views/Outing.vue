@@ -18,7 +18,7 @@
             <b-form @submit="putOuting">
                 <b-container>
                     <b-row>
-                        <b-col>
+                        <b-col cols="12" md="6">
                             <b-form-group label="Course" label-for="course">
                                 <b-form-select v-model="outing.courseId" id="course" name="course" placeholder="Choose course" v-validate="{required: true}">
                                     <option value="">Please select a course</option>
@@ -27,24 +27,24 @@
                                 <span class="text-danger">{{veeErrors.first('course')}}</span>
                             </b-form-group>
                         </b-col>
-                        <b-col>
+                        <b-col cols="12" md="6">
                             <b-form-group label="Organizer" label-for="organizer">
                                 <b-form-select v-model="outing.organizer" v-validate="{required: true}" name="organizer">
                                     <option value="">Please select an organizer</option>
-                                    <option v-for="golfer in golfers" :value="golfer.id">{{golfer.fullname}}</option>
+                                    <option v-for="golfer in allGolfers" :value="golfer.id">{{golfer.fullname}}</option>
                                 </b-form-select>
                                 <span class="text-danger">{{veeErrors.first('organizer')}}</span>
                             </b-form-group>
                         </b-col>
                     </b-row>
                     <b-row>
-                        <b-col>
+                        <b-col cols="12" md="6">
                             <b-form-group label="Date" label-for="date">
                                 <datetime v-model="outing.date" input-id="date" format="cccc LLLL dd, yyyy" input-class="form-control"  value-zone="local" name="date" v-validate="{required: true}" :week-start="7" title="Outing Date"></datetime>
                                 <span class="text-danger">{{veeErrors.first('date')}}</span>
                             </b-form-group>
                         </b-col>
-                        <b-col>
+                        <b-col cols="12" md="6">
                             <b-form-group label="Tee time" label-for="teeTime" description="If multiple tee times are used, put the earliest one here.">
                                 <datetime type="time" use12-hour v-model="outing.teeTime" input-id="teeTime" format="t" input-class="form-control"  value-zone="local" data-vv-as="tee time" name="teeTime" v-validate="{required: true}" title="Tee Time"></datetime>
                                 <span class="text-danger">{{veeErrors.first('teeTime')}}</span>
@@ -52,7 +52,7 @@
                         </b-col>
                     </b-row>
                     <b-row class="mt-2">
-                        <b-col>
+                        <b-col cols="12" md="6">
                             <b-button type="submit" variant="primary"><content-save-icon></content-save-icon> Save Outing</b-button>
                             <b-link class="btn btn-outline-secondary ml-2" :to="{ name: 'outings'}">
                                 Cancel
@@ -155,7 +155,8 @@
                 addToOuting: false,
                 addGolfers:[],
                 golfer: {id: null, name: null, index:0},
-                editHandicap: false
+                editHandicap: false,
+                allGolfers : []
             }
         },
         created: function(){
@@ -185,6 +186,7 @@
                             self.outing = result.data.outing;
                             self.outingGolfers = result.data.outingGolfers;
                             self.golfers = result.data.golfers;
+                            self.allGolfers = result.data.allGolfers;
                         }
                         else{
                             self.loadError = "There was a problem loading the outing."

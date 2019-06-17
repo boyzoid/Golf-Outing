@@ -9,6 +9,7 @@
             <h2 class="text-center">{{ outing.date | moment('dddd MMMM D, YYYY')}}</h2>
             <h2 class="text-center">{{ course.name }}</h2>
             <h3 class="text-center">{{ course.city}}, {{course.state}}</h3>
+            <div class="table-responsive">
             <table class="table table-hover scores">
                 <thead>
                     <tr>
@@ -58,9 +59,11 @@
                     </tr>
                 </tbody>
             </table>
+            </div>
             <div v-if="Object.keys( skins ).length > 0">
                 <h3 class="text-center">Teams <b-link class="ml-2" title="Add Team" @click="openTeam()"><plus-circle-icon title="Add Team"></plus-circle-icon></b-link></h3>
                 <div v-if="teams.length > 0">
+                    <div class="table-responsive">
                     <table class="table table-striped table-hover">
                         <thead>
                         <tr>
@@ -108,15 +111,15 @@
                         </tr>
                         </tbody>
                     </table>
+                    </div>
                 </div>
-                <div v-if="teams.length == 0" class="col-6 offset-3">
+                <div v-if="teams.length == 0" class="col-md-6 offset-md-3 col-sm-10 offset-sm-1">
                     <b-alert variant="info" show>There are no teams configured.</b-alert>
                 </div>
                 <b-modal id="edit-teams" title="Set Team" @ok="setTeam" v-model="editTeams">
                     <b-form>
                         <b-alert variant="info" :show="outingGolfers.length == 0">
                             <p>There are no available golfers to add.</p>
-                            <p>Click here to add a new golfer.</p>
                         </b-alert>
                         <b-form-group label="Golfers" label-for="Golfers" v-if="outingGolfers.length > 0">
                             <b-form-select v-model="team"  id="golfers" name="golfers" placeholder="Choose golfers" multiple>
@@ -136,7 +139,7 @@
                     </template>
                 </b-modal>
             </div>
-            <div v-if="Object.keys( skins ).length > 0" class="col-6 offset-3">
+            <div v-if="Object.keys( skins ).length > 0" class="col-md-6 offset-md-3 col-sm-10 offset-sm-1">
                 <h3 class="text-center">Skins (Net)</h3>
                 <table class="table table-striped table-hover">
                     <tbody>
@@ -156,6 +159,7 @@
         <b-modal id="edit-scores" title="Enter Scores" size="xl" @ok="submitScores">
             <h4>{{course.name}}</h4>
             <h5>{{edit.name}}</h5>
+            <div class="table-responsive">
             <table class="table table-sm">
                 <thead>
                     <tr>
@@ -194,6 +198,7 @@
                 </tr>
                 </tbody>
             </table>
+            </div>
             <template slot="modal-footer" slot-scope="{ ok, close }">
 
                 <b-button variant="secondary" @click="close()">

@@ -55,7 +55,7 @@ component accessors=true{
 
     public function outing( Any rc ){
         param name='rc.id' default=0;
-        variables.fw.renderData().data( { 'success' : true, 'outing': outingService.getOuting( rc.id ), 'outingGolfers': outingService.listOutingGolfers( rc.id ), 'golfers': golferservice.listGolfersForOuting( rc.id )} ).type( 'json' );
+        variables.fw.renderData().data( { 'success' : true, 'outing': outingService.getOuting( rc.id ), 'outingGolfers': outingService.listOutingGolfers( rc.id ), 'allGolfers': golferService.listGolfers(), 'golfers': golferservice.listGolfersForOuting( rc.id )} ).type( 'json' );
     }
 
     public function putOuting( Any rc ){

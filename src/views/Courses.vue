@@ -8,6 +8,7 @@
           <plus-icon></plus-icon> Add Course
         </b-link>
         <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="course-table" v-if="rows > perPage"></b-pagination>
+        <div class="table-responsive">
         <b-table id="course-table" :items="courses" :fields="fields" :per-page="perPage" :current-page="currentPage" :striped="true" :hover="true">
           <template slot="actions" slot-scope="row">
             <b-link class="btn btn-outline-primary btn-sm" :to="{ name: 'course', params: { id: row.item.id }}" :title="'Edit ' + row.item.name">
@@ -15,6 +16,7 @@
             </b-link>
           </template>
         </b-table>
+        </div>
       </div>
       <div v-if="courses.length == 0">
         <div class="alert alert-info">
