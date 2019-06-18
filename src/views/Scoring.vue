@@ -10,7 +10,7 @@
             <h2 class="text-center">{{ course.name }}</h2>
             <h3 class="text-center">{{ course.city}}, {{course.state}}</h3>
             <div class="table-responsive">
-            <table class="table table-hover scores">
+            <table class="table table-hover table-sm table-striped scores">
                 <thead>
                     <tr>
                         <th></th>
@@ -64,7 +64,7 @@
                 <h3 class="text-center">Teams <b-link class="ml-2" title="Add Team" @click="openTeam()"><plus-circle-icon title="Add Team"></plus-circle-icon></b-link></h3>
                 <div v-if="teams.length > 0">
                     <div class="table-responsive">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-striped table-hover table-sm">
                         <thead>
                         <tr>
                             <th></th>
@@ -141,7 +141,7 @@
             </div>
             <div v-if="Object.keys( skins ).length > 0" class="col-md-6 offset-md-3 col-sm-10 offset-sm-1">
                 <h3 class="text-center">Skins (Net)</h3>
-                <table class="table table-striped table-hover">
+                <table class="table table-striped table-hover table-sm">
                     <tbody>
                         <tr v-for="skin in skins">
                             <td>{{skin.name}} ({{skin.holes.length}}) ${{(((outingGolfers.length * 5)/totalSkins)*skin.holes.length).toFixed(2)}}</td>
