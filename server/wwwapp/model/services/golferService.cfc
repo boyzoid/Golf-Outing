@@ -20,4 +20,36 @@ component accessors=true{
         }
         return ret;
     }
+
+    public function putGolfer( struct golfer ){
+        if( val(golfer.id) == 0 ){
+            addGolfer( golfer );
+        }
+        else{
+            updateGolfer( golfer );
+        }
+        return {'success': true};
+    }
+
+    private function addGolfer( struct golfer ){
+        queryExecute('insert into golfer( first_name, last_name, nickname, email_address) values(:firstName, :lastName, :nickname, :email )',
+         {
+            firstName: golfer.firstName,
+            lastName: golfer.lastName,
+            nickname: golfer.nickname,
+            email: golfer.email
+         });
+    }
+
+    private function updateGolfer( struct golfer ){
+        queryExecute('update golfer set first_name = :firstName, last_name = :lastName, nickname = :nickname, email_address = :email where id = :id',
+        {
+            firstName: golfer.firstName,
+            lastName: golfer.lastName,
+            nickname: golfer.nickname,
+            email: golfer.email,
+            id: golfer.id
+        }
+        )
+    }
 }

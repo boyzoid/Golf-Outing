@@ -43,6 +43,11 @@ export default new Router({
       path: '/course/:id',
       name: 'course',
       component: () => import(/* webpackChunkName: "courses" */ './views/Course.vue')
+    },
+    {
+      path: '/golfers',
+      name: 'golfers',
+      component: () => import(/* webpackChunkName: "courses" */ './views/Golfers.vue')
     }
   ]
 })

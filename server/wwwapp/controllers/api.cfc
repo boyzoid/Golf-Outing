@@ -88,6 +88,13 @@ component accessors=true{
     public function golfers( Any rc ){
         variables.fw.renderData().data( { 'success' : true, 'golfers': golferService.listGolfers() } ).type( 'json' );
     }
+
+    public function putGolfer( Any rc ){
+        param name="rc.golfer.id" default=0;
+        var result = golferService.putGolfer( rc.golfer );
+        variables.fw.renderData().data( { 'success' : result.success, 'golfers': golferService.listGolfers() } ).type( 'json' );
+    }
+
     public function updateHandicap( Any rc ){
         param name='rc.golfer' default={id: 0, index: 0 };
         outingService.updateGolferHandicap( rc.golfer );

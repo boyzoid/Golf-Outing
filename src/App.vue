@@ -18,6 +18,9 @@
             <router-link class="nav-link" to="/courses" v-bind:class="{ 'active' : isCourseNav}">Courses</router-link>
           </li>
           <li class="nav-item">
+            <router-link class="nav-link" to="/golfers" v-bind:class="{ 'active' : isGolferNav}">Golfers</router-link>
+          </li>
+          <li class="nav-item">
             <a href="#" @click="logout()" class="nav-link">Logout</a>
           </li>
         </ul>
@@ -74,6 +77,9 @@
       },
       isOutingNav(){
         return this.$route.name == 'outings' || this.$route.name == 'outing' || this.$route.name == 'scoring';
+      },
+      isGolferNav(){
+        return this.$route.name == 'golfers';
       }
     }
   }
