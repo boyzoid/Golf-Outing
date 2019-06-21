@@ -91,6 +91,7 @@ component accessors=true{
 
     public function putGolfer( Any rc ){
         param name="rc.golfer.id" default=0;
+        param name="rc.golfer.nickname" default='';
         var result = golferService.putGolfer( rc.golfer );
         variables.fw.renderData().data( { 'success' : result.success, 'golfers': golferService.listGolfers() } ).type( 'json' );
     }
