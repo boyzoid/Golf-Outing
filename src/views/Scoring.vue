@@ -101,7 +101,7 @@
                                 <b-link @click="removeTeam(idx)" class="text-danger"><trash-can-icon title="Remove Team"></trash-can-icon> </b-link>
                             </td>
                             <td class="align-middle">
-                                <div v-for="g in t.name ">{{ g }}</div>
+                                <span v-for="(g, i) in t.name ">{{ g }}<span v-if="i != t.name.length - 1"> / </span></span>
                             </td>
                             <td v-for="p in $root.lodash.range(1, 10)" class="text-center align-middle">{{getTeamScoreForHole(t,p)}}</td>
                             <td class="text-center table-secondary score align-middle bold" >{{ t.totals.front}}</td>
