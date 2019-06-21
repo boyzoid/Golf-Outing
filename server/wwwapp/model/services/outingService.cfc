@@ -29,7 +29,7 @@ component accessors=true{
         }
     }
 
-    public function listOutingGolfers( numeric id, boolean returnScores=true ){
+    public function listOutingGolfers( numeric id, boolean useNicknames=false ){
         var ret = [];
         var golfers = queryExecute("select og.id, og.golfer_id, concat(g.first_name, ' ' , last_name) golfer, g.nickname, og.handicap_index, h.number, h.par, h.handicap, gs.score
                                     from hole h
@@ -41,7 +41,7 @@ component accessors=true{
                                     where o.id = :id
                                     order by g.last_name, g.first_name, h.number", { id: id });
         cfloop( query=golfers, group='golfer' ){
-            var g = { 'name': golfers.golfer, 'index': golfers.handicap_index, 'scores' : {}, 'id': golfers.id, 'golferId': golfers.golfer_id, 'score' : {'front' : 0, 'back' :0, 'total': 0} };
+            var g = { 'name': useNicknames && len(trim( golfers.nickname ) ) ? golfers.nickname : golfers.golfer, 'index': golfers.handicap_index, 'scores' : {}, 'id': golfers.id, 'golferId': golfers.golfer_id, 'score' : {'front' : 0, 'back' :0, 'total': 0} };
                 var count = 1;
             cfloop(){
                     var score = val( golfers.score );

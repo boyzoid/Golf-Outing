@@ -81,7 +81,7 @@ component accessors=true{
         var outing = outingService.getOuting( rc.id );
         var course = courseService.getCourse( outing.courseid );
         var holes = courseService.getCourseHoles( course.id );
-        var outingGolfers = outingService.listOutingGolfers( rc.id );
+        var outingGolfers = outingService.listOutingGolfers( rc.id, true );
         variables.fw.renderData().data( { 'success': true, 'outing': outing, 'course': course, 'holes': holes, 'outingGolfers': outingGolfers } ).type( 'json' );
     }
 
