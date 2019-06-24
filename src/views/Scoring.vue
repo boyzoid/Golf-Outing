@@ -160,7 +160,7 @@
             <h4>{{course.name}}</h4>
             <h5>{{edit.name}}</h5>
             <div class="mb-2 d-xl-none d-lg-none d-md-none">
-                <b-form-group label="Qucik scoring" description="Use this to enter scores quickly by entering scores for each hole with a space in between">
+                <b-form-group label="Quick scoring" description="Use this to enter scores quickly by entering scores for each hole with a space in between">
                     <b-form-textarea id="quickScore" v-model="quickScore" rows="1" max-rows="2"></b-form-textarea>
                     <div class="bold text-danger" v-if="quickScoresError">
                         {{quickScoresError}}
