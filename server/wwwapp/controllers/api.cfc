@@ -107,7 +107,7 @@ component accessors=true{
         param name='rc.golferid' default=0;
         param name='rc.scores' default=[];
         outingService.postScore( rc.golferId, rc.scores );
-        var outingGolfers = outingService.listOutingGolfers( rc.id );
+        var outingGolfers = outingService.listOutingGolfers( rc.id, true );
         variables.fw.renderData().data( { 'success' : true, 'outingGolfers': outingGolfers } ).type( 'json' );
     }
 }

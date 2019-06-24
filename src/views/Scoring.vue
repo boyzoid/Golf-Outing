@@ -159,6 +159,16 @@
         <b-modal id="edit-scores" title="Enter Scores" size="xl" @ok="submitScores">
             <h4>{{course.name}}</h4>
             <h5>{{edit.name}}</h5>
+            <div class="mb-2 d-xl-none d-lg-none d-md-none">
+                <b-form-group label="Qucik scoring" description="Use this to enter scores quickly by entering scores for each hole with a space in between">
+                    <b-form-textarea id="quickScore" v-model="quickScore" rows="1" max-rows="2"></b-form-textarea>
+                    <div class="bold text-danger" v-if="quickScoresError">
+                        {{quickScoresError}}
+                    </div>
+                </b-form-group>
+
+                <b-button @click="setQuickScores">Set Scores</b-button>
+            </div>
             <div class="table-responsive">
             <table class="table table-sm">
                 <thead>
@@ -175,7 +185,7 @@
                     <tr>
                         <td></td>
                         <td v-for="p in lodash.range( 1, 10)" class="text-center">
-                            <b-form-input type="text" class="course-input mx-auto" :id="'s'+p" v-model="edit.scores[p-1].score" maxlength="1" ></b-form-input>
+                            <b-form-input :tabindex="100+p" type="tel" class="course-input mx-auto" :id="'s'+p" v-model="edit.scores[p-1].score" maxlength="1" ></b-form-input>
                         </td>
                     </tr>
                 </tbody>
@@ -193,7 +203,7 @@
                 <tr>
                     <td></td>
                     <td v-for="p in lodash.range( 10, 19)" class="text-center">
-                        <b-form-input type="text" class="course-input mx-auto" :id="'s'+p" v-model="edit.scores[p-1].score" maxlength="2" ></b-form-input>
+                        <b-form-input :tabindex="100+p" type="tel" class="course-input mx-auto" :id="'s'+p" v-model="edit.scores[p-1].score" maxlength="2" ></b-form-input>
                     </td>
                 </tr>
                 </tbody>
@@ -264,7 +274,9 @@
                 editTeams: false,
                 team:[],
                 teamIdx: -1,
-                teamScores:[]
+                teamScores:[],
+                quickScore: null,
+                quickScoresError: null
             }
         },
         created: function(){
@@ -360,6 +372,8 @@
                 this.edit.outingGolferId = golfer.id;
                 this.edit.name = golfer.name;
                 this.edit.scores = [];
+                this.quickScore = null;
+                this.quickScoresError = null
                 if( Object.keys( golfer.scores ).length > 0 ){
                     for( let score in golfer.scores ){
                         this.edit.scores.push( {'id': this.holes[ score-1 ].id, 'score': golfer.scores[ score ].score != 0 ? golfer.scores[ score ].score : null })
@@ -447,6 +461,19 @@
             removeTeam( idx ){
                 if( this.teams[idx] != undefined ){
                     this.teams.splice( idx, 1 );
+                }
+            },
+            setQuickScores(){
+                let scores = this.quickScore.split(' ');
+                this.quickScoresError = null;
+                if( scores.length <= this.edit.scores.length ){
+                    for( let i=0; i<scores.length; i++ ){
+                        this.edit.scores[i].score = scores[i]
+                    }
+                    this.quickScore = null;
+                }
+                else{
+                    this.quickScoresError = 'You have entered more scores than there are holes, Please check the scores and try again.';
                 }
             }
         },
