@@ -1,5 +1,5 @@
 <template>
-    <div class="col-10 offset-1">
+    <div class="col-12">
         <h1 class="text-center">Outing Scoring</h1>
         <loader v-if="loading"></loader>
         <div v-if="!loading">
@@ -113,8 +113,8 @@
                     </table>
                     </div>
                 </div>
-                <div v-if="teams.length == 0" class="col-md-6 offset-md-3 col-sm-10 offset-sm-1">
-                    <b-alert variant="info" show>There are no teams configured.</b-alert>
+                <div v-if="teams.length == 0" >
+                    <b-alert variant="info" show class="text-center">There are no teams configured.</b-alert>
                 </div>
                 <b-modal id="edit-teams" title="Set Team" @ok="setTeam" v-model="editTeams">
                     <b-form>
@@ -139,7 +139,7 @@
                     </template>
                 </b-modal>
             </div>
-            <div v-if="Object.keys( skins ).length > 0" class="col-md-6 offset-md-3 col-sm-10 offset-sm-1">
+            <div v-if="Object.keys( skins ).length > 0" >
                 <h3 class="text-center">Skins (Net)</h3>
                 <table class="table table-striped table-hover table-sm">
                     <tbody>
