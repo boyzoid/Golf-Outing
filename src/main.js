@@ -13,7 +13,19 @@ import VeeValidate from 'vee-validate';
 import Datetime from 'vue-datetime';
 
 axios.defaults.baseURL = process.env.VUE_APP_API_ROOT;
-//axios.defaults.headers.common['token'] = JSON.parse( localStorage.getItem('store') ).token;
+axios.interceptors.response.use((response) => { // intercept the global error
+  if( response.data.token != undefined && response.data.success != undefined && response.data.success ){
+    store.dispatch( 'setToken', response.data.token )
+  }
+  return response
+}, function (error) {
+  if (error.response.status === 401) {
+    store.dispatch( 'logout' );
+    router.replace({ name: "login"});
+    }
+  // Do something with response error
+  return Promise.reject(error)
+})
 Vue.config.productionTip = false
 
 const options = { name: 'lodash' }

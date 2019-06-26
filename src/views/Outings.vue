@@ -97,7 +97,7 @@
                     self.error = "There was a problem loading the outing list"
                   }
                 }, error => {
-                  console.log( error );
+                  self.loading = false;
                   self.error = "There was a problem loading the outing list"
                 })
       }

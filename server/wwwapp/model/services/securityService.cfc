@@ -13,6 +13,24 @@ component accessors=true{
         }
     }
 
+    public function verifyToken( string token ){
+        var ret = false;
+        try{
+            var t = decryptAuthToken( token );
+            if( t.expires > now() && isValidUser( val( t.id ), t.user) ) ret = true;
+        }
+        catch( any e ){
+            ret = false;
+        }
+
+        return ret;
+    }
+
+    public function renewToken( string token){
+        var t = decryptAuthToken( token );
+        return getAuthToken( t.id, t.user );
+    }
+
     private function getAuthToken( id, username){
         var data = { id: id, user: username, expires: dateAdd('h', 1, now() ) };
         return encryptionService.encrypt( serializeJSON( data ) );
@@ -21,5 +39,10 @@ component accessors=true{
     private function decryptAuthToken( token ){
         var data = encryptionService.decrypt( token );
         return deserializeJSON( data );
+    }
+
+    private function isValidUser( numeric id, string user ){
+        var u = queryExecute('select id from golfer where id = :id and email_address = :user and active = 1', { id: id, user: user } );
+        return u.recordCount == 1;
     }
 }
