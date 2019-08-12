@@ -24,7 +24,7 @@ component accessors=true{
             }
             else{
                 var currentContext = getPageContext().getResponse();
-                    currentContext.getResponse().setStatus( 401, 'Not authenticated');
+                    currentContext.setStatus( 401, 'Not authenticated');
                 abort;
             }
         }
