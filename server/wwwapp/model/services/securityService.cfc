@@ -20,6 +20,8 @@ component accessors=true{
             if( t.expires > now() && isValidUser( val( t.id ), t.user) ) ret = true;
         }
         catch( any e ){
+        writeDump( token );
+        writeDump( var=e, abort=true)
             ret = false;
         }
 

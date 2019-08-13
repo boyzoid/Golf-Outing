@@ -135,7 +135,9 @@
                             method: 'POST',
                             url: '/api/putGolfer',
                             data: {golfer: self.golfer },
-
+                            headers: {
+                                token: self.$store.state.token
+                            },
                             responseType: 'json'
                         })
                             .then( result => {
