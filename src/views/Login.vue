@@ -1,6 +1,6 @@
 <template>
-  <div class="row justify-content-md-center">
-    <div class="col-md-4 col-sm-12">
+  <div class="row justify-content-md-center p-4">
+    <div class="col-md-4">
       <h1>Login</h1>
       <b-alert dissmissable variant="danger" v-model="loginFailed">Login unsuccessful.</b-alert>
       <b-form>
