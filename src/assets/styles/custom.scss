@@ -45,14 +45,16 @@ font-weight: bold;
   text-transform: uppercase !important;
 }
 
-.scores td{
+td.score{
   position: relative;
+  min-width: 3rem;
 }
 
 .scores td span.pop{
   position: absolute;
   top: 0;
 }
+
 
 td.action-1{
   width: 30px;
@@ -76,4 +78,26 @@ td.birdie{
 
 td.eagle{
   background: theme-color-level("warning", -5)
+}
+
+th.golfer-score{
+   white-space: nowrap;
+   position:sticky;
+   left:0px;
+   background-color: $white;
+   z-index: 100;
+ }
+
+tbody tr:nth-child(odd) th.golfer-score {
+  background-color: $gray-100;
+}
+
+th.final-score, td.final-score{
+position: sticky;
+right: 0px;
+white-space: nowrap;
+}
+
+thead th.final-score{
+  background-color: $white;
 }

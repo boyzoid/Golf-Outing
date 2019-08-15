@@ -10,37 +10,37 @@
             <h2 class="text-center">{{ course.name }}</h2>
             <h3 class="text-center">{{ course.city}}, {{course.state}}</h3>
             <div class="table-responsive">
-            <table class="table table-hover table-sm table-striped scores">
+            <table class="table table-sm table-striped scores">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th class="golfer-score"></th>
                         <th v-for="p in this.lodash.range(1, 10)" class="text-center">{{p}}</th>
                         <th></th>
                         <th v-for="p in this.lodash.range(10, 19)" class="text-center">{{p}}</th>
                         <th></th>
-                        <th></th>
+                        <th class="final-score"></th>
                     </tr>
                     <tr>
-                        <th>Handicap</th>
+                        <th class="golfer-score">Handicap</th>
                         <th v-for="p in this.lodash.range(1, 10)" class="text-center">{{holes[p-1].handicap}}</th>
                         <th></th>
                         <th v-for="p in this.lodash.range(10, 19)" class="text-center">{{holes[p-1].handicap}}</th>
                         <th></th>
-                        <th></th>
+                        <th class="final-score"></th>
                     </tr>
                     <tr>
-                        <th>Par</th>
+                        <th class="golfer-score">Par</th>
                         <th v-for="p in this.lodash.range(1, 10)" class="text-center">{{holes[p-1].par}}</th>
                         <th class="text-center">{{courseFrontNine}}</th>
                         <th v-for="p in this.lodash.range(10, 19)" class="text-center">{{holes[p-1].par}}</th>
                         <th class="text-center">{{courseBackNine}}</th>
-                        <th class="text-center">{{ courseFrontNine + courseBackNine }}</th>
+                        <th class="text-center final-score">{{ courseFrontNine + courseBackNine }}</th>
                     </tr>
 
                 </thead>
                 <tbody>
                     <tr v-for="g in outingGolfers" class="golfers">
-                        <th><b-link @click="scoreGolfer( g )" :title="'Edit Score for ' + g.name "><pencil-icon :size="14"></pencil-icon></b-link> {{g.name}} <span class="small">({{g.handicap}})</span></th>
+                        <th class="golfer-score"><b-link @click="scoreGolfer( g )" :title="'Edit Score for ' + g.name "><pencil-icon :size="14"></pencil-icon></b-link> {{g.name}} ({{g.handicap}})</th>
                         <td v-for="p in $parent.lodash.range(1, 10)" class="text-center score" :class="getScoreClass(g.scores, p)">
                             {{ getGolferScore( g.scores, p) }}
                             <span class="pop" v-if="golferGetsPop(g.handicap, holes[p-1].handicap)">
@@ -55,7 +55,7 @@
                             </span>
                         </td>
                         <td class="text-center table-secondary score bold">{{g.score.back}}</td>
-                        <td class="text-center table-info bold">{{ g.score.total }} <span v-if="g.score.total > 0"> ({{g.score.net}})</span></td>
+                        <td class="text-center table-info bold final-score">{{ g.score.total }} <span v-if="g.score.total > 0"> ({{g.score.net}})</span></td>
                     </tr>
                 </tbody>
             </table>
