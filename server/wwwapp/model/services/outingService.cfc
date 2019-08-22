@@ -15,8 +15,14 @@ component accessors=true{
     }
 
     public function getOuting( numeric id=0 ){
-        var outing = queryExecute('select id, date, tee_time, course_id, managed_by from outing where id = :id', { id: id } );
-        return { 'id': outing.id, 'date': dateTimeFormat( outing.date, 'yyyy-mm-dd' ) , 'teeTime': isdate( outing.tee_time ) ? dateTimeFormat( outing.tee_time, 'yyyy-mm-dd' ) & 'T' & dateTimeFormat( outing.tee_time, 'hh:nn:ss.lll') : '', 'courseId': outing.course_id, 'organizer': outing.managed_by };
+        var outing = queryExecute('select id, date, tee_time, course_id, managed_by, teams from outing where id = :id', { id: id } );
+        return {
+        'id': outing.id,
+        'date': dateTimeFormat( outing.date, 'yyyy-mm-dd' ) ,
+        'teeTime': isdate( outing.tee_time ) ? dateTimeFormat( outing.tee_time, 'yyyy-mm-dd' ) & 'T' & dateTimeFormat( outing.tee_time, 'hh:nn:ss.lll') : '',
+        'courseId': outing.course_id,
+        'organizer': outing.managed_by,
+        'teams' : len(trim( outing.teams ) ) && isJson( outing.teams ) ? deserializeJSON( outing.teams ) : [] };
     }
 
     public function putOuting( struct outing ){
@@ -84,6 +90,10 @@ component accessors=true{
         for( var score in scores ){
             queryExecute('insert into golfer_score VAlUES( :id, :holeId, :score ) on duplicate key update score = :score', {id: id, holeId: score.id, score: score.score} );
         }
+    }
+
+    public function putOutingTeams( numeric id=0, array teams=[] ){
+        queryExecute("update outing set teams = :teams where id = :id", {id: id, teams: serializeJSON( teams ) } );
     }
 
     private function addOuting( outing ){

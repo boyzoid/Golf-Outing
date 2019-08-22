@@ -124,4 +124,11 @@ component accessors=true{
         var outingGolfers = outingService.listOutingGolfers( rc.id, true );
         variables.fw.renderData().data( { 'success' : true, 'outingGolfers': outingGolfers, 'token': rc.token  } ).type( 'json' );
     }
+
+    public function putOutingTeams( Any rc ){
+        param name="rc.id" default=0;
+        param name="rc.teams" default=[];
+        outingService.putOutingTeams( rc.id, rc.teams );
+        variables.fw.renderData().data( { 'success' : true, 'token': rc.token  } ).type( 'json' );
+    }
 }
