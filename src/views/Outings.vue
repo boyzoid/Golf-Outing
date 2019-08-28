@@ -11,12 +11,12 @@
         <div class="table-responsive">
         <b-table id="course-table" :items="outings" :fields="fields" :per-page="perPage" :current-page="currentPage" :striped="true" :hover="true">
           <template slot="actions" slot-scope="row">
-            <b-link class="btn btn-outline-primary btn-sm" :to="{ name: 'outing', params: { id: row.item.id }}" title="Edit Outing">
-              <pencil-icon></pencil-icon>
-            </b-link>
-            <b-link class="btn btn-outline-success btn-sm ml-2" :to="{ name: 'scoring', params: { id: row.item.id }}" title="Score Outing">
-              <golf-icon></golf-icon>
-            </b-link>
+              <b-link class="btn btn-outline-primary btn-sm mr-2 mb-2" :to="{ name: 'outing', params: { id: row.item.id }}" title="Edit Outing">
+                <pencil-icon></pencil-icon>
+              </b-link>
+              <b-link class="btn btn-outline-success btn-sm mb-2" :to="{ name: 'scoring', params: { id: row.item.id }}" title="Score Outing">
+                <golf-icon></golf-icon>
+              </b-link>
           </template>
           <template slot="organizer" slot-scope="row">
             <b-link :href="'mailto:' + row.item.manager.email">{{row.item.manager.name}}</b-link>
