@@ -28,8 +28,6 @@ component accessors=true{
                 abort;
             }
         }
-
-
     }
 
     public function default( Any rc ){
