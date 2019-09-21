@@ -1,0 +1,10 @@
+RewriteEngine on
+RewriteCond %{REQUEST_URI} !\.(gif|jpe?g|png|js|css)$ [NC]
+RewriteCond %{REQUEST_URI} !/(js|css|scratch|index.cfm|lucee|favicon.ico|robots.txt) [NC]
+RewriteCond %{REQUEST_URI} /api [NC]
+RewriteRule ^(.*)$ /index.cfm/$1 [NC,L]
+RewriteCond %{REQUEST_URI} !/api [NC]
+RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.cfm [L]
