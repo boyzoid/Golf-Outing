@@ -10,11 +10,11 @@
                 <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="course-table" v-if="rows > perPage"></b-pagination>
                 <div class="table-responsive">
                     <b-table id="course-table" class="table-sm" :items="golfers" :fields="fields" :per-page="perPage" :current-page="currentPage" :striped="true" :hover="true">
-                        <template slot="name" slot-scope="data">
-                            {{ data.value.firstName }} {{ data.value.lastName }}
+                        <template v-slot:cell(name)="data">
+                            {{ data.item.firstName }} {{ data.item.lastName }}
                         </template>
-                        <template slot="actions" slot-scope="row">
-                            <b-link class="btn btn-outline-primary btn-sm" :title="'Edit ' + row.item.name" @click="editGolfer( row.item )">
+                        <template v-slot:cell(actions)="data">
+                            <b-link class="btn btn-outline-primary btn-sm" :title="'Edit ' + data.item.name" @click="editGolfer(data.item )">
                                 <pencil-icon></pencil-icon>
                             </b-link>
                         </template>
@@ -43,7 +43,7 @@
                     <span class="text-danger">{{veeErrors.first('nickname')}}</span>
                 </b-form-group>
                 <b-form-group label="Email Address" label-for="email">
-                    <b-form-input name="email" data-vv-as="email address" id="email" v-model="golfer.email" type="text" v-validate="{required: true, email: true, max: 100}"></b-form-input>
+                    <b-form-input name="email" data-vv-as="email address" id="email" v-model="golfer.emailAddress" type="text" v-validate="{required: true, email: true, max: 100}"></b-form-input>
                     <span class="text-danger">{{veeErrors.first('email')}}</span>
                 </b-form-group>
             </b-form>
@@ -66,21 +66,24 @@
                 currentPage: 1,
                 showEdit: false,
                 golfer: {},
-                fields: {
-                    id:{
+                fields: [
+                    {
                         key: 'actions',
                         label: 'Actions'
                     },
-                    fullname: {
+                    {
+                        key: 'name',
                         label: 'Golfer Name'
                     },
-                    nickname:{
+                    {
+                        key: 'nickname',
                         label: 'Nickname'
                     },
-                    email:{
+                    {
+                        key: 'emailAddress',
                         label: 'Email'
                     }
-                },
+                ],
             }
         },
         created: function(){
@@ -93,7 +96,7 @@
             fetchGolfers(){
                 let self = this;
                 self.loading = true;
-                axios.get('/api/golfers',{
+                axios.get('/golfer',{
                     headers: {
                         token: self.$store.state.token
                     },
@@ -132,17 +135,18 @@
                     if (valid  ) {
                         let self = this;
                         axios({
-                            method: 'POST',
-                            url: '/api/putGolfer',
-                            data: {golfer: self.golfer },
+                            method: 'PUT',
+                            url: '/golfer',
+                            data: self.golfer,
                             headers: {
                                 token: self.$store.state.token
                             },
                             responseType: 'json'
                         })
                             .then( result => {
-                                if( result.data.success ){
-                                    self.golfers = result.data.golfers;
+                                if( result.data.golfer ){
+                                    self.golfer = result.data.golfer;
+                                    self.fetchGolfers();
 
                                     self.success = true;
                                 }

@@ -35,7 +35,7 @@
         let self = this;
         axios({
             method: 'POST',
-            url: '/api/login',
+            url: '/login',
             data: self.input,
           headers: {
             token: self.$store.state.token

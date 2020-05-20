@@ -178,7 +178,7 @@
                 let self = this;
                 self.loading = true;
                 self.error = null
-                axios.get('/api/course/id/' + self.$route.params.id,{
+                axios.get('/course/' + self.$route.params.id,{
                         headers: {
                             token: this.$store.state.token
                         }
@@ -187,8 +187,8 @@
                         self.loading = false;
                         if( result.status == 200 && result.data.success ){
                             self.course = result.data.course;
-                            if( result.data.holes.length > 0 ){
-                                self.holes = result.data.holes;
+                            if( result.data.course.holes.length > 0 ){
+                                self.holes = result.data.course.holes;
                             }
                         }
                         else{
@@ -207,19 +207,21 @@
                     let holesValid = this.validateHoles();
                     if (valid && holesValid ) {
                         let self = this;
+                        self.course.holes = self.holes;
                         axios({
-                            method: 'POST',
-                            url: '/api/putCourse',
-                            data: {course: self.course, holes: self.holes },
+                            method: 'PUT',
+                            url: '/course',
+                            data: self.course,
                             headers: {
                                 token: self.$store.state.token
                             },
                             responseType: 'json'
                         })
                             .then( result => {
-                                if( result.data.success ){
+                                if( result.data.course ){
                                     console.log('success')
                                     self.course = result.data.course;
+                                    self.holes = result.data.course.holes;
 
                                     self.success = true;
                                 }

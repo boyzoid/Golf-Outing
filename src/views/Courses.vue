@@ -10,8 +10,8 @@
         <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="course-table" v-if="rows > perPage"></b-pagination>
         <div class="table-responsive">
         <b-table id="course-table" :items="courses" :fields="fields" :per-page="perPage" :current-page="currentPage" :striped="true" :hover="true">
-          <template slot="actions" slot-scope="row">
-            <b-link class="btn btn-outline-primary btn-sm" :to="{ name: 'course', params: { id: row.item.id }}" :title="'Edit ' + row.item.name">
+          <template v-slot:cell(actions)="data">
+            <b-link class="btn btn-outline-primary btn-sm" :to="{ name: 'course', params: { id: data.item.id }}" :title="'Edit ' + data.item.name">
               <pencil-icon></pencil-icon>
             </b-link>
           </template>
@@ -40,28 +40,39 @@
         error: '',
         perPage: 10,
         currentPage: 1,
-        fields: {
-          id:{
+        fields: [
+
+          {
             key: 'actions',
             label: 'Actions'
           },
-          name: {
+
+          {
+            key: 'name',
             label: 'Course Name',
             sortable: true
           },
-          city:{
+
+          {
+            key: 'city',
             label: 'City'
           },
-          state:{
+
+          {
+            key: 'state',
             label: 'State'
           },
-          slope:{
+
+          {
+            key: 'slope',
             label: 'Slope'
           },
-          rating: {
+
+          {
+            key: 'rating',
             label: 'Rating'
           }
-        },
+        ],
       }
     },
     created: function(){
@@ -74,7 +85,7 @@
       fetchCourses(){
         let self = this;
         self.loading = true;
-        axios.get('/api/courses',{
+        axios.get('/course/list',{
           headers: {
             token: self.$store.state.token
           },

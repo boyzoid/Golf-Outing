@@ -9,6 +9,7 @@ import 'bootstrap';
 import axios from 'axios';
 import Loader from './components/Loader.vue';
 import VueLodash from 'vue-lodash'
+import lodash from 'lodash'
 import VeeValidate from 'vee-validate';
 import Datetime from 'vue-datetime';
 
@@ -28,7 +29,7 @@ axios.interceptors.response.use((response) => { // intercept the global error
 })
 Vue.config.productionTip = false
 
-const options = { name: 'lodash' }
+const options = { name: 'custom', lodash: lodash }
 Vue.use(VueLodash, options)
 Vue.use(VeeValidate, {
   inject: true,
