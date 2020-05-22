@@ -144,7 +144,7 @@
                             responseType: 'json'
                         })
                             .then( result => {
-                                if( result.data.golfer ){
+                                if( result.data.success ){
                                     self.golfer = result.data.golfer;
                                     self.fetchGolfers();
 

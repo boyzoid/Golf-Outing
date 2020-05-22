@@ -10,20 +10,20 @@
         <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="outing-table" v-if="rows > perPage"></b-pagination>
         <div class="table-responsive">
         <b-table id="course-table" :items="outings" :fields="fields" :per-page="perPage" :current-page="currentPage" :striped="true" :hover="true">
-          <template slot="actions" slot-scope="row">
-              <b-link class="btn btn-outline-primary btn-sm mr-2 mb-2" :to="{ name: 'outing', params: { id: row.item.id }}" title="Edit Outing">
+          <template v-slot:cell(actions)="data">
+              <b-link class="btn btn-outline-primary btn-sm mr-2 mb-2" :to="{ name: 'outing', params: { id: data.item.id }}" title="Edit Outing">
                 <pencil-icon></pencil-icon>
               </b-link>
-              <b-link class="btn btn-outline-success btn-sm mb-2" :to="{ name: 'scoring', params: { id: row.item.id }}" title="Score Outing">
+              <b-link class="btn btn-outline-success btn-sm mb-2" :to="{ name: 'scoring', params: { id: data.item.id }}" title="Score Outing">
                 <golf-icon></golf-icon>
               </b-link>
           </template>
-          <template slot="organizer" slot-scope="row">
-            <b-link :href="'mailto:' + row.item.manager.email">{{row.item.manager.name}}</b-link>
+          <template v-slot:cell(organizer)="data">
+            <b-link :href="'mailto:' + data.item.email">{{data.item.firstName}} {{data.item.lastName}}</b-link>
           </template>
-          <template slot="course" slot-scope="row">
-            <div>{{row.item.course.name}}</div>
-            <div class="small">{{row.item.course.location}}</div>
+          <template v-slot:cell(course)="data">
+            <div>{{data.item.name}}</div>
+            <div class="small">{{data.item.city}}, {{data.item.state}}</div>
           </template>
           <template slot="date" slot-scope="row">
             {{ row.item.date | moment('dddd MMMM D, YYYY')}} {{ row.item.teeTime | moment('h:mm a')}}
@@ -53,24 +53,25 @@
         error: '',
         perPage: 10,
         currentPage: 1,
-        fields: {
-          id: {
+        fields: [
+          {
             key: 'actions',
             label: 'Actions'
           },
-          date:{
+          {
             label: 'Date/Time',
+            key: 'date',
             sortable: true
           },
-          course:{
+          {
             key: 'course',
             label: 'Course'
           },
-          manager:{
+          {
             key: 'organizer',
             label: 'Organizer'
           }
-        }
+        ]
       }
     },
     created: function(){
@@ -83,7 +84,7 @@
       fetchOutings(){
         let self = this;
         self.loading = true;
-        axios.get('/api/outings',{
+        axios.get('/outing/list',{
           headers: {
             token: self.$store.state.token
           },

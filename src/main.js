@@ -38,12 +38,13 @@ Vue.use(VeeValidate, {
   errorBagName: 'veeErrors',
   events: ''
 })
-Vue.use(require('vue-moment'));
 
 // You need a specific loader for CSS files
 import 'vue-datetime/dist/vue-datetime.css'
 
 Vue.use(Datetime)
+
+Vue.use(require('vue-moment'));
 
 Vue.component('loader', Loader );
 

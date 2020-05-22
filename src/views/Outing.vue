@@ -20,7 +20,7 @@
                     <b-row>
                         <b-col cols="12" md="6">
                             <b-form-group label="Course" label-for="course">
-                                <b-form-select v-model="outing.courseId" id="course" name="course" placeholder="Choose course" v-validate="{required: true}">
+                                <b-form-select v-model="outing.course.id" id="course" name="course" placeholder="Choose course" v-validate="{required: true}">
                                     <option value="">Please select a course</option>
                                     <option v-for="course in courses" :value="course.id">{{course.name}}</option>
                                 </b-form-select>
@@ -29,9 +29,9 @@
                         </b-col>
                         <b-col cols="12" md="6">
                             <b-form-group label="Organizer" label-for="organizer">
-                                <b-form-select v-model="outing.organizer" v-validate="{required: true}" name="organizer">
+                                <b-form-select v-model="outing.organizer.id" v-validate="{required: true}" name="organizer">
                                     <option value="">Please select an organizer</option>
-                                    <option v-for="golfer in allGolfers" :value="golfer.id">{{golfer.fullname}}</option>
+                                    <option v-for="golfer in allGolfers" :value="golfer.id">{{golfer.lastName}}, {{golfer.firstName}}</option>
                                 </b-form-select>
                                 <span class="text-danger">{{veeErrors.first('organizer')}}</span>
                             </b-form-group>
@@ -40,7 +40,7 @@
                     <b-row>
                         <b-col cols="12" md="6">
                             <b-form-group label="Date" label-for="date">
-                                <datetime v-model="outing.date" input-id="date" format="cccc LLLL dd, yyyy" input-class="form-control"  value-zone="local" name="date" v-validate="{required: true}" :week-start="7" title="Outing Date"></datetime>
+                                <datetime v-model="outing.date" input-id="date" format="MM/dd/yyyy" input-class="form-control"  value-zone="local" name="date" v-validate="{required: true}" :week-start="7" title="Outing Date"></datetime>
                                 <span class="text-danger">{{veeErrors.first('date')}}</span>
                             </b-form-group>
                         </b-col>
@@ -100,7 +100,7 @@
                     </b-alert>
                     <b-form-group label="Golfers" label-for="Golfers" v-if="golfers.length > 0">
                         <b-form-select v-model="addGolfers"  id="golfers" name="golfers" placeholder="Choose golfers" multiple>
-                            <option v-for="golfer in golfers" :value="golfer.id">{{golfer.fullname}}</option>
+                            <option v-for="golfer in golfers" :value="golfer.id">{{golfer.lastName}}, {{golfer.firstName}}</option>
                         </b-form-select>
                     </b-form-group>
                 </b-form>
@@ -144,7 +144,7 @@
         components: {PencilIcon, TrashCanIcon, PlusCircleIcon, ContentSaveIcon, ArrowLeftIcon},
         data() {
             return {
-                outing: {id: 0},
+                outing: { organizer: { id: 0}, course: { id: 0 } },
                 loading: true,
                 error: false,
                 success: false,
@@ -175,7 +175,7 @@
                 let self = this;
                 self.loading = true;
                 self.error = null
-                axios.get('/api/outing/id/' + self.$route.params.id,{
+                axios.get('/outing/' + self.$route.params.id,{
                     headers: {
                         token: self.$store.state.token
                     },
@@ -183,9 +183,11 @@
                     .then( result => {
                         self.loading = false;
                         if( result.status == 200 && result.data.success ){
-                            self.outing = result.data.outing;
-                            self.outingGolfers = result.data.outingGolfers;
-                            self.golfers = result.data.golfers;
+                            if( result.data.outing.id ){
+                                self.outing = result.data.outing;
+                            }
+                            self.outingGolfers = [];
+                            self.golfers = result.data.allGolfers;
                             self.allGolfers = result.data.allGolfers;
                         }
                         else{
@@ -199,13 +201,12 @@
             fetchCourses(){
                 let self = this;
                 self.loading = true;
-                axios.get('/api/courses',{
+                axios.get('/course/list',{
                     headers: {
                         token: self.$store.state.token
                     },
                 })
                     .then( result => {
-                        self.loading = false;
                         if( result.status == 200 && result.data.success ){
                             self.courses = result.data.courses;
                         }
@@ -220,11 +221,16 @@
 
                 this.$validator.validate().then(valid => {
                     if (valid ) {
+                        //this.outing.date =  this.$moment( this.outing.date ).format( 'YYYY-MM-DD');
+                        if( this.outing.teeTime.length > 8 ){
+                            this.outing.teeTime =  this.$moment( this.outing.teeTime ).format( 'HH:mm:ss');
+                        }
+
                         let self = this;
                         axios({
-                            method: 'POST',
-                            url: '/api/putOuting',
-                            data: {outing: this.outing },
+                            method: ( this.outing.id ) ? 'PUT' : 'POST',
+                            url: '/outing',
+                            data: this.outing ,
                             headers: {
                                 token: self.$store.state.token
                             },
