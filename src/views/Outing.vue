@@ -67,10 +67,10 @@
                     </b-row>
                     <b-row v-if="outing.id">
                         <b-col class="col-md-8 offset-md-2">
-                            <b-alert :show="outingGolfers.length == 0" variant="info">
+                            <b-alert :show="outing.outingGolfers.length == 0" variant="info">
                                 There are currently no golfers assigned to this outing. <b-link href="#" @click="openAddGolfers()">click here</b-link> to add golfers.
                             </b-alert>
-                            <table class="table table-striped table-hover table-sm" v-if="outingGolfers.length > 0">
+                            <table class="table table-striped table-hover table-sm" v-if="outing.outingGolfers.length > 0">
                                 <thead class="thead-dark">
                                     <tr>
                                         <th></th>
@@ -79,13 +79,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="golfer in outingGolfers">
+                                    <tr v-for="golfer in outing.outingGolfers">
                                         <td class="action-2">
-                                            <a class="text-danger pr-2" href="#" @click="removeGolfer( golfer.id)" :title="'Remove ' + golfer.name + ' from outing'"><trash-can-icon :size="20" :title="'Remove ' + golfer.name + ' from outing'"></trash-can-icon></a>
-                                            <a class="text-primary " href="#" @click="openEdit(golfer)" :title="'Update handicap for ' + golfer.name"><pencil-icon :size="20" :title="'Update handicap for ' + golfer.name"></pencil-icon></a>
+                                            <a class="text-danger pr-2" href="#" @click="removeGolfer( golfer.id)" :title="'Remove ' + golfer.golfer.firstName + ' from outing'"><trash-can-icon :size="20" :title="'Remove ' + golfer.golfer.firstName + ' from outing'"></trash-can-icon></a>
+                                            <a class="text-primary " href="#" @click="openEdit(golfer)" :title="'Update handicap for ' + golfer.golfer.firstName"><pencil-icon :size="20" :title="'Update handicap for ' + golfer.golfer.firstName"></pencil-icon></a>
                                         </td>
-                                        <td >{{golfer.name}}</td>
-                                        <td>{{golfer.index}}</td>
+                                        <td >{{golfer.golfer.lastName}}, {{golfer.golfer.firstName}}</td>
+                                        <td>{{golfer.handicapIndex}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -189,6 +189,7 @@
                             self.outingGolfers = [];
                             self.golfers = result.data.allGolfers;
                             self.allGolfers = result.data.allGolfers;
+                            self.outingGolfers = result.data.outingGolfers ? result.data.outingGolfers : [];
                         }
                         else{
                             self.loadError = "There was a problem loading the outing."
