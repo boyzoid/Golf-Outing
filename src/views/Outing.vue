@@ -81,7 +81,7 @@
                                 <tbody>
                                     <tr v-for="golfer in outing.outingGolfers">
                                         <td class="action-2">
-                                            <a class="text-danger pr-2" href="#" @click="removeGolfer( golfer.id)" :title="'Remove ' + golfer.golfer.firstName + ' from outing'"><trash-can-icon :size="20" :title="'Remove ' + golfer.golfer.firstName + ' from outing'"></trash-can-icon></a>
+                                            <a class="text-danger pr-2" href="#" @click="removeGolfer( golfer.golfer.id)" :title="'Remove ' + golfer.golfer.firstName + ' from outing'"><trash-can-icon :size="20" :title="'Remove ' + golfer.golfer.firstName + ' from outing'"></trash-can-icon></a>
                                             <a class="text-primary " href="#" @click="openEdit(golfer)" :title="'Update handicap for ' + golfer.golfer.firstName"><pencil-icon :size="20" :title="'Update handicap for ' + golfer.golfer.firstName"></pencil-icon></a>
                                         </td>
                                         <td >{{golfer.golfer.lastName}}, {{golfer.golfer.firstName}}</td>
@@ -259,8 +259,8 @@
                 if( this.addGolfers.length > 0 ){
                     axios({
                         method: 'POST',
-                        url: '/api/addToOuting',
-                        data: {outing: this.outing, golfers: this.addGolfers },
+                        url: '/outing/addGolfers',
+                        data: {outingId: this.outing.id, golfers: this.addGolfers },
                         headers: {
                             token: self.$store.state.token
                         },
@@ -268,7 +268,7 @@
                     }).then( result => {
                         if( result.data.success ){
                             self.golfers = result.data.golfers;
-                            self.outingGolfers = result.data.outingGolfers;
+                            self.outing = result.data.outing;
                             this.addToOuting = false;
                         }
                     }, error => {
@@ -286,8 +286,8 @@
             removeGolfer( id ){
                 let self = this;
                 axios({
-                    method: 'POST',
-                    url: '/api/removeGolferFromOuting',
+                    method: 'GET',
+                    url: '/outing/deleteGolfer/' + this.outing.id + '/' + id,
                     data: {id: id, outing: this.outing },
                     headers: {
                         token: self.$store.state.token
@@ -296,7 +296,7 @@
                 }).then( result => {
                     if( result.data.success ){
                         self.golfers = result.data.golfers;
-                        self.outingGolfers = result.data.outingGolfers;
+                        self.outing = result.data.outing;
                     }
                 }, error => {
                     console.log( error );
