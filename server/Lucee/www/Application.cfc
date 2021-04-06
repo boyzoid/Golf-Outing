@@ -95,8 +95,11 @@ component extends="framework.one" {
 		diLocations: ['/model'],
 		defaultSection: 'api',
 		reloadApplicationOnEveryRequest = true,
-		unhandledPaths: '/flex2gateway,/assets'
+		unhandledPaths: '/flex2gateway,/assets',
+		reloadApplicationOnEveryRequest: getEnvironment() == 'dev'
 	};
+
+	writeDump( var=variables.framework, abort=true);
 
 	ormPaths=["/model/orm"];
 	this.ormSettings = {dialect="MySQL",cfclocation=ormPaths,logsql=false,flushatrequestend=false,eventhandling=true,saveMapping=false, dbcreate="none", caheProvider="HashTable", secondaryCacheEnabled=false};

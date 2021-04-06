@@ -4,7 +4,7 @@
         "cfengine":"lucee@5.2.6+59"
     },
     "web":{
-        "webroot":"server/www",
+        "webroot":"server/Lucee/www",
         "host":"outing.mygolfleague.net.local",
         "http":{
             "port":"80"

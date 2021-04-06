@@ -16,18 +16,18 @@ component accessors=true{
         if( isJSON( requestBody ) ){
             structAppend( rc, deserializeJSON(requestBody ) );
         }
-        request.layout = false;
-        if( cgi.request_method != 'OPTIONS' && rc.action != 'api.default' && rc.action != 'api.login' ){
+        //request.layout = false;
+        /*if( cgi.request_method != 'OPTIONS' && rc.action != 'api.default' && rc.action != 'api.login' ){
             var headers = req.headers;
             if( structKeyExists( headers, 'token' ) && securityService.verifyToken( headers.token ) ){
                rc.token = securityService.renewToken( headers.token );
             }
             else{
                 var currentContext = getPageContext().getResponse();
-                    currentContext.setStatus( 401, 'Not authenticated');
+                    currentContext.setStatus( 403, 'Not authenticated booger');
                 abort;
             }
-        }
+        }*/
     }
 
     public function default( Any rc ){

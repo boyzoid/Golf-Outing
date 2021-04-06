@@ -39,6 +39,7 @@ component accessors=true{
     }
 
     private function decryptAuthToken( token ){
+        writeDump( var=arguments, abort=true );
         var data = encryptionService.decrypt( token );
         return deserializeJSON( data );
     }
