@@ -1,0 +1,27 @@
+micronaut:
+  application:
+    name: golfOuting
+datasources:
+  default:
+    url: jdbc:mysql://localhost:3306/golf_outing
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: root
+    password: ${DB_PASSWORD}
+jpa:
+  default:
+    packages-to-scan:
+      - 'golf.outing.model'
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+        show_sql: true
+
+micronaut:
+  server:
+    cors:
+      enabled: true
+jackson:
+  serialization-inclusion: ALWAYS
+  serialization:
+    indent-output: true

@@ -100,7 +100,7 @@ component accessors=true{
         outing.teeTime = timeFormat( replaceNoCase(outing.teeTime, 'T', ' '), 'hh:mm:ss');
         outing.date = dateformat( replaceNoCase( outing.date, 'T', ' '), 'yyyy-mm-dd');
         queryExecute( 'insert into outing( date, tee_time, managed_by, course_id ) values( :date, :teeTime, :organizer, :courseId )',
-        { date: outing.date, teeTime: outing.teeTime, organizer: outing.organizer, courseId: outing.courseId },
+        { date: outing.date, teeTime: outing.teeTime, organizer: outing.organizer.id, courseId: outing.course.id },
         {result: 'result'}  );
         return getOuting( result.generatedKey );
     }

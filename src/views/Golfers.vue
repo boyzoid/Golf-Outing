@@ -43,7 +43,7 @@
                     <span class="text-danger">{{veeErrors.first('nickname')}}</span>
                 </b-form-group>
                 <b-form-group label="Email Address" label-for="email">
-                    <b-form-input name="email" data-vv-as="email address" id="email" v-model="golfer.emailAddress" type="text" v-validate="{required: true, email: true, max: 100}"></b-form-input>
+                    <b-form-input name="email" data-vv-as="email address" id="email" v-model="golfer.email" type="text" v-validate="{required: true, email: true, max: 100}"></b-form-input>
                     <span class="text-danger">{{veeErrors.first('email')}}</span>
                 </b-form-group>
             </b-form>
@@ -80,7 +80,7 @@
                         label: 'Nickname'
                     },
                     {
-                        key: 'emailAddress',
+                        key: 'email',
                         label: 'Email'
                     }
                 ],
@@ -96,7 +96,7 @@
             fetchGolfers(){
                 let self = this;
                 self.loading = true;
-                axios.get('/golfer',{
+                axios.get('/golfer/list',{
                     headers: {
                         token: self.$store.state.token
                     },
@@ -137,7 +137,7 @@
                         axios({
                             method: 'PUT',
                             url: '/golfer',
-                            data: self.golfer,
+                            data: {golfer: self.golfer },
                             headers: {
                                 token: self.$store.state.token
                             },

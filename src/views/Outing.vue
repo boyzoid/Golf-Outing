@@ -229,9 +229,9 @@
 
                         let self = this;
                         axios({
-                            method: ( this.outing.id ) ? 'PUT' : 'POST',
+                            method: 'PUT',
                             url: '/outing',
-                            data: this.outing ,
+                            data: { outing: this.outing} ,
                             headers: {
                                 token: self.$store.state.token
                             },
@@ -313,7 +313,7 @@
                         let self = this;
                         axios({
                             method: 'POST',
-                            url: '/api/updateHandicap',
+                            url: '/updateHandicap',
                             data: {golfer: this.golfer },
                             headers: {
                                 token: self.$store.state.token

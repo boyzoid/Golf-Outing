@@ -12,22 +12,19 @@ component accessors=true{
     public function before( Any rc ){
         var req = getHTTPRequestData();
         rc.token = '';
-        requestBody = toString( req.content );
-        if( isJSON( requestBody ) ){
-            structAppend( rc, deserializeJSON(requestBody ) );
-        }
-        //request.layout = false;
-        /*if( cgi.request_method != 'OPTIONS' && rc.action != 'api.default' && rc.action != 'api.login' ){
+        request.layout = false;
+        var method = variables.fw.getCGIRequestMethod();
+        if( method != 'OPTIONS' && rc.action != 'api.default' && rc.action != 'api.login' ){
             var headers = req.headers;
             if( structKeyExists( headers, 'token' ) && securityService.verifyToken( headers.token ) ){
                rc.token = securityService.renewToken( headers.token );
             }
             else{
                 var currentContext = getPageContext().getResponse();
-                    currentContext.setStatus( 403, 'Not authenticated booger');
+                    currentContext.setStatus( 401, 'Not authenticated');
                 abort;
             }
-        }*/
+        }
     }
 
     public function default( Any rc ){
@@ -53,7 +50,9 @@ component accessors=true{
 
     public function course( Any rc ){
         param name='rc.id' default=0;
-        variables.fw.renderData().data( { 'success' : true, 'course': courseService.getCourse( rc.id ), 'holes': courseService.getCourseHoles( rc.id ), 'token': rc.token  } ).type( 'json' );
+        var course = courseService.getCourse( rc.id );
+        course['holes'] = courseService.getCourseHoles( rc.id );
+        variables.fw.renderData().data( { 'success' : true, 'course': course,  'token': rc.token  } ).type( 'json' );
     }
 
     public function putCourse( Any rc ){

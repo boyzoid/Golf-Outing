@@ -296,7 +296,7 @@
                 let self = this;
                 self.loading = true;
                 self.error = null
-                axios.get('/api/outingdetails/id/' + self.$route.params.id,{
+                axios.get('/outingdetails/' + self.$route.params.id,{
                     headers: {
                         token: self.$store.state.token
                     },
@@ -386,7 +386,7 @@
                 let self = this;
                 axios({
                     method: 'POST',
-                    url: '/api/postScore',
+                    url: '/postScore',
                     data: {id: self.outing.id, golferId: self.edit.outingGolferId, scores: self.edit.scores },
                     headers: {
                         token: self.$store.state.token
@@ -476,7 +476,7 @@
                 let self = this;
                 axios({
                     method: 'POST',
-                    url: '/api/putOutingTeams',
+                    url: '/putOutingTeams',
                     data: {id: self.outing.id, teams: self.outing.teams },
                     headers: {
                         token: self.$store.state.token

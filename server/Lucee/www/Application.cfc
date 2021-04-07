@@ -64,7 +64,6 @@ component extends="framework.one" {
         routesCaseSensitive = true
 	};
 	*/
-
 	this.name = "golf_outing";
 	this.sessionManagement = true;
 	this.sessionManagement = true;
@@ -86,20 +85,35 @@ component extends="framework.one" {
 		location: {addtoken: false }
 	};
 
-
 	variables.framework = {
 		base: "/wwwapp",
 		generateSES: true,
 		SESOmitIndex: true,
+		defaultSection: 'api',
 		applicationKey: "golf_outing",
 		diLocations: ['/model'],
-		defaultSection: 'api',
 		reloadApplicationOnEveryRequest = true,
 		unhandledPaths: '/flex2gateway,/assets',
-		reloadApplicationOnEveryRequest: getEnvironment() == 'dev'
+		reloadApplicationOnEveryRequest: getEnvironment() == 'dev',
+		decodeRequestBody: true,
+		routes:[
+				{ '$POST/login' = '/api/login' },
+				{ '$GET/course/list' = '/api/courses' },
+				{ '$GET/course/{id:[0-9]*}' = '/api/course/id/:id'},
+				{ '$PUT/course/' = '/api/putCourse'},
+				{ '$GET/outing/list' = '/api/outings' },
+				{ '$GET/outing/{id:[0-9]*}' = '/api/outing/id/:id'},
+				{ '$PUT/outing/addGolfers' = '/api/addToOuting'},
+				{ '$GET/outing/deleteGolfer/{outingId:[0-9]*}/{golferId:[0-9]*}' = '/api/removeGolferFromOuting/outingId/:outingId/golferId/:golferId'},
+				{ '$PUT/outing/' = '/api/putOuting'},
+				{ '$GET/outingdetails/{id:[0-9]*}' = 'api/outingDetails/id/:id'},
+				{ '$GET/golfer/list' = '/api/golfers' },
+				{ '$PUT/golfer'  = '/api/putGolfer' },
+				{ '$POST/updateHandicap' = '/api/updateHandicap' },
+				{ '$POST/postScore' = '/api/postScore' },
+				{ '$POST/putOutingTeams' = '/api/putOutingTeams' }
+			]
 	};
-
-	writeDump( var=variables.framework, abort=true);
 
 	ormPaths=["/model/orm"];
 	this.ormSettings = {dialect="MySQL",cfclocation=ormPaths,logsql=false,flushatrequestend=false,eventhandling=true,saveMapping=false, dbcreate="none", caheProvider="HashTable", secondaryCacheEnabled=false};
@@ -111,6 +125,7 @@ component extends="framework.one" {
 		controller( 'setup.default' );
 		cfheader( name="Access-Control-Allow-Origin", value="*");
 		cfheader( name="Access-Control-Allow-Headers", value="Content-Type, Access-Control-Allow-Headers, X-Requested-With, token, content-type");
+		cfheader( name="Access-Control-Allow-Methods", value="OPTIONS,POST,PUT,GET" );
 	}
 
 	function setUpApplication( rc ){

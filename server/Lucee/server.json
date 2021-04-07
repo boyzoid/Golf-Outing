@@ -1,10 +1,10 @@
 {
-    "name":"Golf Outing",
+    "name":"Golf Outing Demo",
     "app":{
         "cfengine":"lucee@5.2.6+59"
     },
     "web":{
-        "webroot":"server/Lucee/www",
+        "webroot":"www",
         "host":"outing.mygolfleague.net.local",
         "http":{
             "port":"80"

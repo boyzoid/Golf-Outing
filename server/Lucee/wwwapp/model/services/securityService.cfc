@@ -2,7 +2,7 @@ component accessors=true{
     property Any encryptionService;
 
     public function login( username, password ){
-        var pwd = encryptionService.encrypt( password );
+        var pwd = encryptionService.hash( password );
         var login = queryExecute('select id, email_address from golfer where email_address = :email and password = :pwd', {email: username, pwd: pwd });
         if( login.recordCount == 1 ) {
             return {'success': true, 'token': getAuthToken(login.id, login.email_address) };
@@ -39,7 +39,6 @@ component accessors=true{
     }
 
     private function decryptAuthToken( token ){
-        writeDump( var=arguments, abort=true );
         var data = encryptionService.decrypt( token );
         return deserializeJSON( data );
     }
