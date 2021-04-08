@@ -66,7 +66,9 @@ component accessors=true{
 
     public function outing( Any rc ){
         param name='rc.id' default=0;
-        variables.fw.renderData().data( { 'success' : true, 'outing': outingService.getOuting( rc.id ), 'outingGolfers': outingService.listOutingGolfers( rc.id ), 'allGolfers': golferService.listGolfers(), 'golfers': golferservice.listGolfersForOuting( rc.id ) , 'token': rc.token  } ).type( 'json' );
+        var outing = outingService.getOuting( rc.id );
+        outing[ 'golfers' ] = outingService.listOutingGolfers( rc.id )
+        variables.fw.renderData().data( { 'success' : true, 'outing': outing, 'allGolfers': golferService.listGolfers() , 'availableGolfers' : golferservice.listGolfersForOuting( rc.id ) , 'token': rc.token  } ).type( 'json' );
     }
 
     public function putOuting( Any rc ){
@@ -75,16 +77,16 @@ component accessors=true{
     }
 
     public function addToOuting( Any rc ){
-        param name="rc.outing" default={ id: 0 };
+        param name="rc.outing" default={ id : 0 };
         param name='rc.golfers' default=[];
         outingService.addGolfersToOuting( rc.outing.id, rc.golfers);
-        variables.fw.renderData().data( { 'success': true, 'golfers': golferservice.listGolfersForOuting( rc.outing.id ), 'outingGolfers': outingService.listOutingGolfers( rc.outing.id ), 'token': rc.token }  ).type( 'json' );
+        variables.fw.renderData().data( { 'success': true, 'token': rc.token }  ).type( 'json' );
     }
 
     public function removeGolferFromOuting( Any rc ){
         param name='rc.id' default=0;
         outingService.removeGolferFromOuting( rc.id );
-        variables.fw.renderData().data( { 'success': true, 'golfers': golferservice.listGolfersForOuting( rc.outing.id ), 'outingGolfers': outingService.listOutingGolfers( rc.outing.id ), 'token': rc.token } ).type( 'json' );
+        variables.fw.renderData().data( { 'success': true, 'token': rc.token } ).type( 'json' );
     }
 
     public function outingDetails( Any rc ){

@@ -20,8 +20,8 @@ component accessors=true{
         'id': outing.id,
         'date': dateTimeFormat( outing.date, 'yyyy-mm-dd' ) ,
         'teeTime': isdate( outing.tee_time ) ? dateTimeFormat( outing.tee_time, 'yyyy-mm-dd' ) & 'T' & dateTimeFormat( outing.tee_time, 'hh:nn:ss.lll') : '',
-        'courseId': outing.course_id,
-        'organizer': outing.managed_by,
+        'course': { 'id' : outing.course_id },
+        'organizer': { 'id': outing.managed_by },
         'teams' : len(trim( outing.teams ) ) && isJson( outing.teams ) ? deserializeJSON( outing.teams ) : [] };
     }
 
