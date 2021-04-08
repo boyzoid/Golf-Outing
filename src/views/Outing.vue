@@ -31,7 +31,7 @@
                             <b-form-group label="Organizer" label-for="organizer">
                                 <b-form-select v-model="outing.organizer.id" v-validate="{required: true}" name="organizer">
                                     <option value="">Please select an organizer</option>
-                                    <option v-for="golfer in allGolfers" :value="golfer.id">{{golfer.lastName}}, {{golfer.firstName}}</option>
+                                    <option v-for="golfer in golfers" :value="golfer.id">{{golfer.lastName}}, {{golfer.firstName}}</option>
                                 </b-form-select>
                                 <span class="text-danger">{{veeErrors.first('organizer')}}</span>
                             </b-form-group>
@@ -67,10 +67,10 @@
                     </b-row>
                     <b-row v-if="outing.id">
                         <b-col class="col-md-8 offset-md-2">
-                            <b-alert :show="outing.outingGolfers.length == 0" variant="info">
+                            <b-alert :show="outing.golfers.length == 0" variant="info">
                                 There are currently no golfers assigned to this outing. <b-link href="#" @click="openAddGolfers()">click here</b-link> to add golfers.
                             </b-alert>
-                            <table class="table table-striped table-hover table-sm" v-if="outing.outingGolfers.length > 0">
+                            <table class="table table-striped table-hover table-sm" v-if="outing.golfers.length > 0">
                                 <thead class="thead-dark">
                                     <tr>
                                         <th></th>
@@ -79,13 +79,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="golfer in outing.outingGolfers">
+                                    <tr v-for="golfer in outing.golfers">
                                         <td class="action-2">
-                                            <a class="text-danger pr-2" href="#" @click="removeGolfer( golfer.golfer.id)" :title="'Remove ' + golfer.golfer.firstName + ' from outing'"><trash-can-icon :size="20" :title="'Remove ' + golfer.golfer.firstName + ' from outing'"></trash-can-icon></a>
-                                            <a class="text-primary " href="#" @click="openEdit(golfer)" :title="'Update handicap for ' + golfer.golfer.firstName"><pencil-icon :size="20" :title="'Update handicap for ' + golfer.golfer.firstName"></pencil-icon></a>
+                                            <a class="text-danger pr-2" href="#" @click="removeGolfer( golfer.id)" :title="'Remove ' + golfer.name + ' from outing'"><trash-can-icon :size="20" :title="'Remove ' + golfer.name + ' from outing'"></trash-can-icon></a>
+                                            <a class="text-primary " href="#" @click="openEdit(golfer)" :title="'Update handicap for ' + golfer.name"><pencil-icon :size="20" :title="'Update handicap for ' + golfer.name"></pencil-icon></a>
                                         </td>
-                                        <td >{{golfer.golfer.lastName}}, {{golfer.golfer.firstName}}</td>
-                                        <td>{{golfer.handicapIndex}}</td>
+                                        <td >{{golfer.name}}</td>
+                                        <td>{{golfer.index}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -94,13 +94,13 @@
                 </b-container>
                 <b-modal id="add-to-outing" title="Add Golfer to Outing" v-model="addToOuting" @ok="putGolfers" v-if="outing.id">
                 <b-form>
-                    <b-alert variant="info" :show="golfers.length == 0">
+                    <b-alert variant="info" :show="availableGolfers.length == 0">
                         <p>There are no available golfers to add.</p>
                         <p>Click here to add a new golfer.</p>
                     </b-alert>
-                    <b-form-group label="Golfers" label-for="Golfers" v-if="golfers.length > 0">
+                    <b-form-group label="Golfers" label-for="Golfers" v-if="availableGolfers.length > 0">
                         <b-form-select v-model="addGolfers"  id="golfers" name="golfers" placeholder="Choose golfers" multiple>
-                            <option v-for="golfer in golfers" :value="golfer.id">{{golfer.lastName}}, {{golfer.firstName}}</option>
+                            <option v-for="golfer in availableGolfers" :value="golfer.id">{{golfer.lastName}}, {{golfer.firstName}}</option>
                         </b-form-select>
                     </b-form-group>
                 </b-form>
@@ -144,19 +144,18 @@
         components: {PencilIcon, TrashCanIcon, PlusCircleIcon, ContentSaveIcon, ArrowLeftIcon},
         data() {
             return {
-                outing: { organizer: { id: 0}, course: { id: 0 } },
+                outing: { organizer: { id: 0}, course: { id: 0 }, golfers: [] },
                 loading: true,
                 error: false,
                 success: false,
                 loadError: null,
                 courses: [],
                 golfers: [],
-                outingGolfers: [],
                 addToOuting: false,
                 addGolfers:[],
                 golfer: {id: null, name: null, index:0},
                 editHandicap: false,
-                allGolfers : []
+                availableGolfers: []
             }
         },
         created: function(){
@@ -182,14 +181,13 @@
                 })
                     .then( result => {
                         self.loading = false;
+
                         if( result.status == 200 && result.data.success ){
                             if( result.data.outing.id ){
                                 self.outing = result.data.outing;
                             }
-                            self.outingGolfers = [];
                             self.golfers = result.data.allGolfers;
-                            self.allGolfers = result.data.allGolfers;
-                            self.outingGolfers = result.data.outingGolfers ? result.data.outingGolfers : [];
+                            self.availableGolfers = result.data.availableGolfers;
                         }
                         else{
                             self.loadError = "There was a problem loading the outing."
@@ -258,17 +256,16 @@
                 let self = this;
                 if( this.addGolfers.length > 0 ){
                     axios({
-                        method: 'POST',
+                        method: 'PUT',
                         url: '/outing/addGolfers',
-                        data: {outingId: this.outing.id, golfers: this.addGolfers },
+                        data: {outing: { id: this.outing.id }, golfers: this.addGolfers },
                         headers: {
                             token: self.$store.state.token
                         },
                         responseType: 'json'
                     }).then( result => {
                         if( result.data.success ){
-                            self.golfers = result.data.golfers;
-                            self.outing = result.data.outing;
+                            this.fetchOuting();
                             this.addToOuting = false;
                         }
                     }, error => {
@@ -287,7 +284,7 @@
                 let self = this;
                 axios({
                     method: 'GET',
-                    url: '/outing/deleteGolfer/' + this.outing.id + '/' + id,
+                    url: '/outing/deleteGolfer/' + id,
                     data: {id: id, outing: this.outing },
                     headers: {
                         token: self.$store.state.token
@@ -295,8 +292,7 @@
                     responseType: 'json'
                 }).then( result => {
                     if( result.data.success ){
-                        self.golfers = result.data.golfers;
-                        self.outing = result.data.outing;
+                        this.fetchOuting();
                     }
                 }, error => {
                     console.log( error );
