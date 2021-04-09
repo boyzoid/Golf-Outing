@@ -47,7 +47,7 @@ component accessors=true{
                                     where o.id = :id
                                     order by g.last_name, g.first_name, h.number", { id: id });
         cfloop( query=golfers, group='golfer' ){
-            var g = { 'name': useNicknames && len(trim( golfers.nickname ) ) ? golfers.nickname : golfers.golfer, 'index': golfers.handicap_index, 'scores' : {}, 'id': golfers.id, 'golferId': golfers.golfer_id, 'score' : {'front' : 0, 'back' :0, 'total': 0} };
+            var g = { 'name': useNicknames && len(trim( golfers.nickname ) ) ? golfers.nickname : golfers.golfer, 'handicap': golfers.handicap_index, 'scores' : {}, 'id': golfers.id, 'golferId': golfers.golfer_id, 'score' : {'front' : 0, 'back' :0, 'total': 0} };
                 var count = 1;
             cfloop(){
                     var score = val( golfers.score );
@@ -83,7 +83,7 @@ component accessors=true{
     }
 
     public function updateGolferHandicap( struct golfer ){
-        queryExecute( 'update outing_golfer set handicap_index = :idx where id = :id ', { id: golfer.id, idx: golfer.index } );
+        queryExecute( 'update outing_golfer set handicap_index = :idx where id = :id ', { id: golfer.id, idx: golfer.handicap } );
     }
 
     public function postScore( numeric id, array scores ){

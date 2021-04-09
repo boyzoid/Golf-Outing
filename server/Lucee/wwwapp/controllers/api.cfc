@@ -92,10 +92,10 @@ component accessors=true{
     public function outingDetails( Any rc ){
         param name='rc.id' default=0;
         var outing = outingService.getOuting( rc.id );
-        var course = courseService.getCourse( outing.courseid );
-        var holes = courseService.getCourseHoles( course.id );
+        outing.course = courseService.getCourse( outing.course.id );
+        outing.course[ 'holes' ] = courseService.getCourseHoles( outing.course.id);
         var outingGolfers = outingService.listOutingGolfers( rc.id, true );
-        variables.fw.renderData().data( { 'success': true, 'outing': outing, 'course': course, 'holes': holes, 'outingGolfers': outingGolfers, 'token': rc.token  } ).type( 'json' );
+        variables.fw.renderData().data( { 'success': true, 'outing': outing, 'outingGolfers': outingGolfers, 'token': rc.token  } ).type( 'json' );
     }
 
     public function golfers( Any rc ){

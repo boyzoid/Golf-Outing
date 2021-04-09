@@ -93,7 +93,7 @@
 
                     </thead>
                     <tbody>
-                    <tr v-for="(t, idx) in outing.teams">
+                    <tr v-for="(t, idx) in sortedTeams">
                         <th class="align-middle golfer-score">
                             <b-link @click="removeTeam(idx)" class="text-danger"><trash-can-icon title="Remove Team"></trash-can-icon> </b-link>
                             {{t.name.join(' - ')}}
@@ -281,7 +281,7 @@
             outingGolfers: function( n, o ){
                if( n.length > 0 ){
                    for( let i=0; i<n.length; i++ ){
-                       n[i].handicap = this.courseHandicap( n[i].index);
+                       n[i].handicap = this.courseHandicap( n[i].handicap);
                        n[i].score.net = n[i].score.total - n[i].handicap;
                    }
                    this.handicapPrime =  this.lodash.minBy(n, function(g){
@@ -305,8 +305,8 @@
                         self.loading = false;
                         if( result.status == 200 && result.data.success ){
                             self.outing = result.data.outing;
-                            self.course = result.data.course;
-                            self.holes = result.data.holes;
+                            self.holes = result.data.outing.course.holes;
+                            self.course = result.data.outing.course;
                             self.outingGolfers = result.data.outingGolfers;
                         }
                         else{
@@ -413,7 +413,7 @@
                     team.name.push( golfer.name );
                 }
                 for( let j=0; j<18; j++){
-                    let netScore = 99;
+                    let netScore = 999;
                     for( let k=0; k<this.team.length; k++ ){
                         let golfer = this.team[k];
                         let golferScore = golfer.scores[ j+1 ].score;
@@ -423,7 +423,7 @@
                         }
 
                     }
-                    if( netScore == 99 ){
+                    if( netScore == 999 ){
                         netScore = 0
                     }
                     team.scores.push( netScore );
@@ -488,7 +488,8 @@
                     }, error => {
                         console.log( error );
                     })
-            }
+            },
+
         },
         computed:{
             courseFrontNine(){
@@ -546,7 +547,11 @@
                 }
                 }
                 return ret
-            }
+            },
+          sortedTeams() {
+          var sortedTeams = this.outing.teams.sort((a, b) => { return a.totals.total - b.totals.total;});
+            return sortedTeams;
+          }
 
         }
     }

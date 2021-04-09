@@ -85,7 +85,7 @@
                                             <a class="text-primary " href="#" @click="openEdit(golfer)" :title="'Update handicap for ' + golfer.name"><pencil-icon :size="20" :title="'Update handicap for ' + golfer.name"></pencil-icon></a>
                                         </td>
                                         <td >{{golfer.name}}</td>
-                                        <td>{{golfer.index}}</td>
+                                        <td>{{golfer.handicap}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -116,7 +116,7 @@
                 <b-modal id="edit-handicap" :title="'Edit Handicap for ' + golfer.name" v-model="editHandicap" @ok="updateHandicap" v-if="outing.id">
                     <b-form>
                         <b-form-group label="Handicap Index" label-for="index">
-                            <b-form-input name="index" id="index" v-model="golfer.index" type="text" v-validate="{required: true, decimal: 1, max_value: 36, min_value: 0}"></b-form-input>
+                            <b-form-input name="index" id="index" v-model="golfer.handicap" type="text" v-validate="{required: true, decimal: 1, max_value: 36, min_value: 0}"></b-form-input>
                             <span class="text-danger">{{veeErrors.first('index')}}</span>
                         </b-form-group>
                     </b-form>
