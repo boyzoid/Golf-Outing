@@ -56,8 +56,8 @@ component accessors=true{
     }
 
     public function putCourse( Any rc ){
-        var data = courseService.putCourse( rc.course, rc.holes );
-        variables.fw.renderData().data( { 'success': true, 'course': data.course, 'holes': data.holes , 'token': rc.token }  ).type( 'json' );
+        var course = courseService.putCourse( rc.course );
+        variables.fw.renderData().data( { 'success' : true, 'course': course,  'token': rc.token  } ).type( 'json' );
     }
 
     public function outings( Any rc ){

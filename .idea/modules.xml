@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/golf-outing-demo.iml" filepath="$PROJECT_DIR$/golf-outing-demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/server/Lucee/Lucee.iml" filepath="$PROJECT_DIR$/server/Lucee/Lucee.iml" />
+      <module fileurl="file://$PROJECT_DIR$/client/Vue.js/Vue.js.iml" filepath="$PROJECT_DIR$/client/Vue.js/Vue.js.iml" />
     </modules>
   </component>
 </project>

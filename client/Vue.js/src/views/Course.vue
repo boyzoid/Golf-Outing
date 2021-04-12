@@ -211,7 +211,7 @@
                         axios({
                             method: 'PUT',
                             url: '/course',
-                            data: self.course,
+                            data: { course: self.course },
                             headers: {
                                 token: self.$store.state.token
                             },
@@ -219,7 +219,6 @@
                         })
                             .then( result => {
                                 if( result.data.course ){
-                                    console.log('success')
                                     self.course = result.data.course;
                                     self.holes = result.data.course.holes;
 

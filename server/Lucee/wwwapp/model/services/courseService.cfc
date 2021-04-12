@@ -31,15 +31,15 @@ component accessors=true{
         return ret;
     }
 
-    public function putCourse( struct course, array holes ){
+    public function putCourse( struct course ){
         var ret = {};
         if( course.id == 0 ){
-            ret['course'] = addCourse( course );
+            ret = addCourse( course );
         }
         else{
-            ret['course'] = updateCourse( course );
+            ret = updateCourse( course );
         }
-        ret['holes'] = putHoles( holes, ret.course.id );
+        ret['holes'] = putHoles( course.holes, course.id );
         return ret;
     }
 
