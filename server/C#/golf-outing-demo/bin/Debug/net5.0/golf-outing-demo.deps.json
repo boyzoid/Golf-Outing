@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v5.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v5.0": {
+      "golf-outing-demo/1.0.0": {
+        "runtime": {
+          "golf-outing-demo.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "golf-outing-demo/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

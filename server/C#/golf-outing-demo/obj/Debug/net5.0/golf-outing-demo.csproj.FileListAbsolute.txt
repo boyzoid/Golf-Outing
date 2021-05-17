@@ -1,0 +1,16 @@
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\bin\Debug\net5.0\golf-outing-demo.exe
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\bin\Debug\net5.0\golf-outing-demo.deps.json
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\bin\Debug\net5.0\golf-outing-demo.runtimeconfig.json
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\bin\Debug\net5.0\golf-outing-demo.runtimeconfig.dev.json
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\bin\Debug\net5.0\golf-outing-demo.dll
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\bin\Debug\net5.0\ref\golf-outing-demo.dll
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\bin\Debug\net5.0\golf-outing-demo.pdb
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\obj\Debug\net5.0\golf-outing-demo.csprojAssemblyReference.cache
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\obj\Debug\net5.0\golf-outing-demo.GeneratedMSBuildEditorConfig.editorconfig
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\obj\Debug\net5.0\golf-outing-demo.AssemblyInfoInputs.cache
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\obj\Debug\net5.0\golf-outing-demo.AssemblyInfo.cs
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\obj\Debug\net5.0\golf-outing-demo.csproj.CoreCompileInputs.cache
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\obj\Debug\net5.0\golf-outing-demo.dll
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\obj\Debug\net5.0\ref\golf-outing-demo.dll
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\obj\Debug\net5.0\golf-outing-demo.pdb
+D:\Sites\golf-outing-demo\server\C#\golf-outing-demo\obj\Debug\net5.0\golf-outing-demo.genruntimeconfig.cache
